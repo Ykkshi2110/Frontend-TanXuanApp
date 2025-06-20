@@ -130,6 +130,12 @@ export interface ICategory {
     updatedAt?: string;
 }
 
+export interface ICategoryFilter {
+    name?: string;
+    active?: boolean;
+    createdAt?: string | null;
+}
+
 export interface ISupplier {
     id?: string;
     name: string;
@@ -138,6 +144,13 @@ export interface ISupplier {
     totalProducts: number;
     createdAt?: string;
     updatedAt?: string;
+}
+
+export interface ISupplierFilter {
+    name?: string;
+    contactInfo?: string;
+    active?: boolean;
+    createdAt?: string | null;
 }
 
 

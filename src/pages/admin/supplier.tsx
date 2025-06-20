@@ -5,17 +5,26 @@ import Pagination from "../../components/common/pagination";
 
 import { Plus } from "lucide-react";
 import SupplierTable from "../../components/admin/suppliers/supplier.table";
-import { apiFetchAllSupplier } from "../../config/api";
-import { ISupplier } from "../../types/backend";
+import { apiFetchAllSupplier, apiSearchSupplier } from "../../config/api";
+import { ISupplier, ISupplierFilter } from "../../types/backend";
+import { useDebounce } from "use-debounce";
 
 const SupplierPage = () => {
   const MAX_SUPPLIERS_PAGE = 5;
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchCurrentPage, setSearchCurrentPage] = useState(1);
+  const [totalSearchPage, setTotalSearchPage] = useState(1);
   const [selectedSupplier, setSelectedSupplier] = useState<ISupplier | null>(null);
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isOpenActionModal, setIsOpenActionModal] = useState(false);
-  const [isOpenViewModal, setIsOpenViewModal] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [filters, setFilters] = useState<ISupplierFilter>({
+    name: "",
+    contactInfo: "",
+    active: true,
+    createdAt: null,
+  });
+  const [debouncedFilters] = useDebounce(filters, 500);
 
 
   const {
@@ -39,33 +48,27 @@ const SupplierPage = () => {
   }, [suppliers]);
 
   // Search suppliers
-//   const { data: searchData, error: searchError } = useQuery({
-//     queryKey: ["searchSuppliers", debouncedFilters, searchCurrentPage],
-//     queryFn: () =>
-//       apiSearchProduct(`page=${searchCurrentPage}&size=${MAX_PRODUCTS_PAGE}`, {
-//         name: debouncedFilters.name,
-//         quantity: debouncedFilters.quantity,
-//         unit: debouncedFilters.unit,
-//         price: debouncedFilters.price,
-//         ...(debouncedFilters.category?.id
-//           ? { category: { id: debouncedFilters.category.id } }
-//           : {}),
-//         ...(debouncedFilters.supplier?.id
-//           ? { supplier: { id: debouncedFilters.supplier.id } }
-//           : {}),
-//       }),
-//     enabled: Object.values(debouncedFilters).some(
-//       (value) => value !== "" || value !== null || value !== 0
-//     ),
-//   });
+  const { data: searchData, error: searchError } = useQuery({
+    queryKey: ["searchSuppliers", debouncedFilters, searchCurrentPage],
+    queryFn: () =>
+      apiSearchSupplier(`page=${searchCurrentPage}&size=${MAX_SUPPLIERS_PAGE}`, {
+        name: debouncedFilters.name,
+        contactInfo: debouncedFilters.contactInfo,
+        active: debouncedFilters.active,
+        createdAt: debouncedFilters.createdAt,
+      }),
+    enabled: Object.values(debouncedFilters).some(
+      (value) => value !== "" || value !== null
+    ),
+  });
 
-//   // Set total search page
-//   useEffect(() => {
-//     if (searchData) {
-//       setTotalSearchPage(searchData?.data?.data?.meta?.pages ?? 0);
-//       setDisplayData(searchData?.data?.data?.result ?? []);
-//     }
-//   }, [searchData]);
+  // Set total search page
+  useEffect(() => {
+    if (searchData) {
+      setTotalSearchPage(searchData?.data?.data?.meta?.pages ?? 0);
+      setDisplayData(searchData?.data?.data?.result ?? []);
+    }
+  }, [searchData]);
 
   // Set display data
   useEffect(() => {
@@ -74,20 +77,10 @@ const SupplierPage = () => {
     }
   }, [suppliers, isSearching]);
 
-//   const handleFilterChange = (key: string, value: string | number) => {
-//     setFilters((prev) => {
-//       let newValue;
-//       if (key === "supplier") {
-//         newValue = { supplier: { id: value as string } };
-//       } else if (key === "category") {
-//         newValue = { category: { id: value as string } };
-//       } else {
-//         newValue = { [key]: value };
-//       }
-//       return { ...prev, ...newValue };
-//     });
-//     setIsSearching(!!value);
-//   };
+  const handleFilterChange = (key: string, value: string) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+    setIsSearching(!!value);
+  };
 
   const queryClient = useQueryClient();
   const reloadTable = () => {
@@ -109,18 +102,13 @@ const SupplierPage = () => {
     setSelectedSupplier(supplier);
   };
 
-  const handleOpenViewModal = (supplier: ISupplier) => {
-    setIsOpenViewModal(true);
-    setSelectedSupplier(supplier);
-  };
-
-//   if (error || searchError) {
-//     return (
-//       <div>
-//         <p>Something went wrong!</p>
-//       </div>
-//     );
-//   }
+  if (error || searchError) {
+    return (
+      <div>
+        <p>Something went wrong!</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4 relative">
@@ -142,23 +130,20 @@ const SupplierPage = () => {
         <>
           <div className="mb-6">
             <SupplierTable
-              onViewClick={handleOpenViewModal}
               supplierData={displayData}
               onEditClick={handleOpenEditModal}
               onDeleteClick={handleOpenDeleteModal}
-            //   filters={filters}
-            //   onFilterChange={handleFilterChange}
+              filters={filters}
+              onFilterChange={handleFilterChange}
             />
           </div>
 
           <div className="flex justify-center">
             <Pagination
-              currentPage={currentPage}
-              setCurrentPage={
-                setCurrentPage
-              }
+              currentPage={ isSearching ? searchCurrentPage : currentPage}
+              setCurrentPage={ isSearching ? setSearchCurrentPage : setCurrentPage}
               total={
-                suppliers?.data.data?.meta.pages ?? 0
+                isSearching ? totalSearchPage : suppliers?.data.data?.meta.pages ?? 0
               }
             />
           </div>
