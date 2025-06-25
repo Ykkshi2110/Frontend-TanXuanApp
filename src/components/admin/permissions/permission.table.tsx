@@ -1,16 +1,15 @@
 import "react-datepicker/dist/react-datepicker.css";
 import { IPermission } from "../../../types/backend";
-import PermissionRow from "./permissions.row";
+import PermissionRow from "./permission.row";
 
 interface IProps {
   permissionData?: IPermission[] | null;
   onEditClick: (permission: IPermission) => void;
   onDeleteClick: (permission: IPermission) => void;
-  onViewClick: (permission: IPermission) => void;
 }
 
 const PermissionTable = (props: IProps) => {
-  const { permissionData, onEditClick, onDeleteClick, onViewClick } = props;
+  const { permissionData, onEditClick, onDeleteClick } = props;
 
   return (
     <div className="flex flex-col">
@@ -75,7 +74,6 @@ const PermissionTable = (props: IProps) => {
                     permissionData={permission}
                     onEditClick={() => onEditClick(permission)}
                     onDeleteClick={() => onDeleteClick(permission)}
-                    onViewClick={() => onViewClick(permission)}
                   />
                 ))}
               </tbody>

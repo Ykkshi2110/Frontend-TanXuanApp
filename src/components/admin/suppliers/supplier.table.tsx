@@ -114,7 +114,7 @@ const SupplierTable = (props: IProps) => {
                   >
                     <div className="flex flex-nowrap items-center gap-x-1">
                       Trạng thái
-                      <div className="hs-dropdown [--auto-close:inside] [--placement:bottom-left] [--strategy:absolute] relative inline-flex">
+                      <div className="hs-dropdown [--auto-close:inside] [--placement:bottom-left] [--strategy:fixed] relative inline-flex">
                         <button
                           id="hs-dropdown-filter-status"
                           type="button"
@@ -134,7 +134,7 @@ const SupplierTable = (props: IProps) => {
                         </button>
 
                         <div
-                          className="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden mt-2 min-w-40 bg-white shadow-md rounded-lg p-2"
+                          className="hs-dropdown-menu z-10 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden mt-2 min-w-40 bg-white shadow-md rounded-lg p-2"
                           role="menu"
                           aria-orientation="vertical"
                           aria-labelledby="hs-dropdown-filter-status"

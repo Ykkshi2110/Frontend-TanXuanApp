@@ -8,6 +8,8 @@ import SupplierTable from "../../components/admin/suppliers/supplier.table";
 import { apiFetchAllSupplier, apiSearchSupplier } from "../../config/api";
 import { ISupplier, ISupplierFilter } from "../../types/backend";
 import { useDebounce } from "use-debounce";
+import SupplierModal from "../../components/admin/suppliers/supplier.modal";
+import SupplierModalDelete from "../../components/admin/suppliers/supplier.modal.delete";
 
 const SupplierPage = () => {
   const MAX_SUPPLIERS_PAGE = 5;
@@ -150,36 +152,26 @@ const SupplierPage = () => {
         </>
       )}
 
-      {/* <ProductModal
+      <SupplierModal
         isOpenActionModal={isOpenActionModal}
-        dataInit={selectedProduct}
-        setDataInit={setSelectedProduct}
+        dataInit={selectedSupplier}
+        setDataInit={setSelectedSupplier}
         onClose={() => {
-          setSelectedProduct(null);
+          setSelectedSupplier(null);
           setIsOpenActionModal(false);
         }}
-      /> */}
+      />
 
-      {/* <ProductModalDelete
+      <SupplierModalDelete
         isOpenDeleteModal={isOpenDeleteModal}
-        dataInit={selectedProduct}
-        setDataInit={setSelectedProduct}
+        dataInit={selectedSupplier}
+        setDataInit={setSelectedSupplier}
         onClose={() => {
-          setSelectedProduct(null);
+          setSelectedSupplier(null);
           setIsOpenDeleteModal(false);
         }}
         reloadTable={reloadTable}
       />
-
-      <ProductModalDetail
-        isOpenViewModal={isOpenViewModal}
-        dataInit={selectedProduct}
-        setDataInit={setSelectedProduct}
-        onClose={() => {
-          setSelectedProduct(null);
-          setIsOpenViewModal(false);
-        }}
-      /> */}
     </div>
   );
 };

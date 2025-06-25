@@ -141,7 +141,7 @@ export interface ISupplier {
     name: string;
     active: boolean;
     contactInfo: string;
-    totalProducts: number;
+    totalProducts?: number;
     createdAt?: string;
     updatedAt?: string;
 }

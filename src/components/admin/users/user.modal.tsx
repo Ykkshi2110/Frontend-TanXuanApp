@@ -159,7 +159,7 @@ const UserModal = (props: IProps) => {
       {isOpenActionModal && (
         <div className="z-[-1] transition duration fixed inset-0 bg-gray-900/50 dark:bg-neutral-900/80"></div>
       )}
-      <div className="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all md:max-w-lg md:w-full m-3 md:mx-auto">
+      <div className="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all lg:max-w-3xl lg:w-full m-3 md:mx-auto">
         <div className="flex flex-col bg-white border border-gray-200 shadow-2xs rounded-xl pointer-events-auto">
           <div className="flex justify-between items-center py-3 px-4 border-b">
             <h3
@@ -195,7 +195,7 @@ const UserModal = (props: IProps) => {
 
           <form onSubmit={handleSubmitUser}>
             <div className="p-4 overflow-y-auto">
-              <div className="grid sm:grid-cols-1 gap-6">
+              <div className="grid sm:grid-cols-2 gap-6">
                 {/* Name */}
                 <div>
                   <label
@@ -324,7 +324,7 @@ const UserModal = (props: IProps) => {
                 </div>
 
                 {/* Address */}
-                <div>
+                <div className={`${dataInit ? "sm:col-span-2" : ""}`}>
                   <label
                     className="block text-sm font-medium text-gray-700 mb-2"
                     htmlFor="address"

@@ -89,14 +89,51 @@ export const apiFetchAllCategory = ( query: string ) => {
     return axiosClient.get<IBackendResponse<IModelPagination<ICategory>>>(`/categories?${query}`)
 }
 
+export const apiUpdateCategory = ( category: ICategory ) => {
+    return axiosClient.post<IBackendResponse<ICategory>>(`/categories/update`, {...category})
+}
+
+export const apiCreateCategory = ( category: ICategory ) => {
+    return axiosClient.post<IBackendResponse<ICategory>>(`/categories/create`, {...category})
+}
+
+export const apiDeleteCategory = ( id: string ) => {
+    return axiosClient.delete<IBackendResponse<ICategory>>(`/categories/delete/${id}`)
+}
+
 /* Module Supplier */
 export const apiFetchAllSupplier = ( query: string ) => {
     return axiosClient.get<IBackendResponse<IModelPagination<ISupplier>>>(`/suppliers?${query}`)
 }
 
+export const apiUpdateSupplier = ( supplier: ISupplier ) => {
+    return axiosClient.post<IBackendResponse<ISupplier>>(`/suppliers/update`, {...supplier})
+}
+
+export const apiCreateSupplier = ( supplier: ISupplier ) => {
+    return axiosClient.post<IBackendResponse<ISupplier>>(`/suppliers/create`, {...supplier})
+}
+
+export const apiDeleteSupplier = ( id: string ) => {
+    return axiosClient.delete<IBackendResponse<ISupplier>>(`/suppliers/delete/${id}`)
+}
+
+
 /* Module Permission */
 export const apiFetchAllPermission = ( query: string ) => {
     return axiosClient.get<IBackendResponse<IModelPagination<IPermission>>>(`/permissions?${query}`)
+}
+
+export const apiUpdatePermission = ( permission: IPermission ) => {
+    return axiosClient.post<IBackendResponse<IPermission>>(`/permissions/update`, {...permission})
+}
+
+export const apiCreatePermission = ( permission: IPermission ) => {
+    return axiosClient.post<IBackendResponse<IPermission>>(`/permissions/create`, {...permission})
+}
+
+export const apiDeletePermission = ( id: string ) => {
+    return axiosClient.delete<IBackendResponse<IPermission>>(`/permissions/delete/${id}`)
 }
 
 /* Module Upload */

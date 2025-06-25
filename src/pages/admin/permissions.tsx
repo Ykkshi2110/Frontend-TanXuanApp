@@ -4,9 +4,11 @@ import LoadingSpinner from "../../components/common/loading.spinner";
 import Pagination from "../../components/common/pagination";
 
 import { Plus } from "lucide-react";
-import PermissionTable from "../../components/admin/permissions/permissions.table";
+import PermissionTable from "../../components/admin/permissions/permission.table";
 import { apiFetchAllPermission } from "../../config/api";
 import { IPermission } from "../../types/backend";
+import PermissionModal from "../../components/admin/permissions/permission.modal";
+import PermissionModalDelete from "../../components/admin/permissions/permission.modal.delete";
 
 const PermissionPage = () => {
   const MAX_PERMISSIONS_PAGE = 5;
@@ -14,7 +16,6 @@ const PermissionPage = () => {
   const [selectedPermission, setSelectedPermission] = useState<IPermission | null>(null);
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isOpenActionModal, setIsOpenActionModal] = useState(false);
-  const [isOpenViewModal, setIsOpenViewModal] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
 
 
@@ -109,11 +110,6 @@ const PermissionPage = () => {
     setSelectedPermission(permission);
   };
 
-  const handleOpenViewModal = (permission: IPermission) => {
-    setIsOpenViewModal(true);
-    setSelectedPermission(permission);
-  };
-
 //   if (error || searchError) {
 //     return (
 //       <div>
@@ -142,7 +138,6 @@ const PermissionPage = () => {
         <>
           <div className="mb-6">
             <PermissionTable
-              onViewClick={handleOpenViewModal}
               permissionData={displayData}
               onEditClick={handleOpenEditModal}
               onDeleteClick={handleOpenDeleteModal}
@@ -165,36 +160,26 @@ const PermissionPage = () => {
         </>
       )}
 
-      {/* <ProductModal
+      <PermissionModal
         isOpenActionModal={isOpenActionModal}
-        dataInit={selectedProduct}
-        setDataInit={setSelectedProduct}
+        dataInit={selectedPermission}
+        setDataInit={setSelectedPermission}
         onClose={() => {
-          setSelectedProduct(null);
+          setSelectedPermission(null);
           setIsOpenActionModal(false);
         }}
-      /> */}
+      />
 
-      {/* <ProductModalDelete
+      <PermissionModalDelete
         isOpenDeleteModal={isOpenDeleteModal}
-        dataInit={selectedProduct}
-        setDataInit={setSelectedProduct}
+        dataInit={selectedPermission}
+        setDataInit={setSelectedPermission}
         onClose={() => {
-          setSelectedProduct(null);
+          setSelectedPermission(null);
           setIsOpenDeleteModal(false);
         }}
         reloadTable={reloadTable}
       />
-
-      <ProductModalDetail
-        isOpenViewModal={isOpenViewModal}
-        dataInit={selectedProduct}
-        setDataInit={setSelectedProduct}
-        onClose={() => {
-          setSelectedProduct(null);
-          setIsOpenViewModal(false);
-        }}
-      /> */}
     </div>
   );
 };
