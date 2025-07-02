@@ -51,7 +51,7 @@ const CategoryModal = (props: IProps) => {
     });
   }, [dataInit, reset]);
 
-  const handleSubmitUser = handleSubmit(async (valuesForm: FormValues) => {
+  const handleSubmitCategory = handleSubmit(async (valuesForm: FormValues) => {
     if (dataInit?.id) {
       const transformedValues = {
         id: dataInit?.id,
@@ -144,7 +144,7 @@ const CategoryModal = (props: IProps) => {
             </button>
           </div>
 
-          <form onSubmit={handleSubmitUser}>
+          <form onSubmit={handleSubmitCategory}>
             <div className="p-4 overflow-y-auto">
               <div className="grid sm:grid-cols-1 gap-6">
                 {/* Name */}

@@ -6,13 +6,12 @@ interface IProps {
   roleData?: IRole;
   onEditClick: () => void;
   onDeleteClick: () => void;
-  onViewClick: () => void;
 }
 
 dayjs.locale("vi");
 
 const RoleRow = (props: IProps) => {
-  const { roleData, onEditClick, onDeleteClick, onViewClick } = props;
+  const { roleData, onEditClick, onDeleteClick } = props;
 
 
   return (
@@ -24,38 +23,12 @@ const RoleRow = (props: IProps) => {
         {roleData?.description}
       </td>
       <td className="px-4 py-3 whitespace-nowrap text-xs text-black-800">
-        {dayjs.unix(Number(roleData?.createdAt)).format("DD/MM/YYYY")}
+        {roleData?.createdAt ? dayjs.unix(Number(roleData?.createdAt)).format("DD/MM/YYYY") : ""}
       </td>
       <td className="px-4 py-3 whitespace-nowrap text-xs text-black-800">
-        {dayjs.unix(Number(roleData?.updatedAt)).format("DD/MM/YYYY")}
+        {roleData?.updatedAt ? dayjs.unix(Number(roleData?.updatedAt)).format("DD/MM/YYYY") : ""}
       </td>
       <td className="px-4 py-3 whitespace-nowrap text-end">
-        <button
-          type="button"
-          className="inline-flex items-center gap-x-2 px-1 rounded-lg border border-transparent text-gray-800 hover:text-gray-900 hover:bg-gray-50 focus:outline-hidden focus:text-gray-800 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-500 dark:hover:text-gray-400 dark:focus:text-gray-400"
-          onClick={onViewClick}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="size-3.5 text-blue-800"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-            />
-          </svg>
-        </button>
-
         <button
           type="button"
           className="inline-flex items-center gap-x-2 px-1 rounded-lg border border-transparent text-gray-800 hover:text-gray-900 hover:bg-gray-50 focus:outline-hidden focus:text-gray-800 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-500 dark:hover:text-gray-400 dark:focus:text-gray-400"

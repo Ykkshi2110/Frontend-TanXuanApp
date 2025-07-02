@@ -54,7 +54,7 @@ const SupplierModal = (props: IProps) => {
     });
   }, [dataInit, reset]);
 
-  const handleSubmitUser = handleSubmit(async (valuesForm: FormValues) => {
+  const handleSubmitSupplier = handleSubmit(async (valuesForm: FormValues) => {
     if (dataInit?.id) {
       const transformedValues = {
         id: dataInit?.id,
@@ -147,7 +147,7 @@ const SupplierModal = (props: IProps) => {
             </button>
           </div>
 
-          <form onSubmit={handleSubmitUser}>
+          <form onSubmit={handleSubmitSupplier}>
             <div className="p-4 overflow-y-auto">
               <div className="grid sm:grid-cols-1 gap-6">
                 {/* Name */}

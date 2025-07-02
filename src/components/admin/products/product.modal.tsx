@@ -167,7 +167,7 @@ const ProductModal = (props: IProps) => {
       id="hs-large-modal"
       className={`hs-overlay ${
         isOpenActionModal ? "open opened" : "hidden"
-      } size-full fixed top-0 start-0 z-50 overflow-x-hidden overflow-y-auto pointer-events-none`}
+      } size-full fixed top-0 start-0 z-50 overflow-x-hidden pointer-events-none`}
       aria-labelledby="hs-large-modal-label"
     >
       {isOpenActionModal && (
@@ -208,10 +208,10 @@ const ProductModal = (props: IProps) => {
           </div>
 
           <form onSubmit={handleSubmitProduct}>
-            <div className="p-4 overflow-y-auto">
+            <div className="p-4 overflow-y-auto max-h-[460px]">
               <div className="grid sm:grid-cols-2 gap-6">
                 {/* Name */}
-                <div>
+                <div> 
                   <label
                     className="block text-sm font-medium text-gray-700 mb-2"
                     htmlFor="name"

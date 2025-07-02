@@ -68,6 +68,7 @@ export interface IUserFilter {
 export interface IPermission {
     id?: string;
     name: string;
+    module: string;
     method: string;
     route: string;
     createdBy?: string;
@@ -81,8 +82,9 @@ export interface IRole {
     id?: string;
     name: string;
     description: string;
-    permission: IPermission[] | string[]
-
+    permissions?: {
+        id: string;
+    }[];
     createdAt?: string;
     createdBy?: string;
     updatedAt?: string;
@@ -150,6 +152,14 @@ export interface ISupplierFilter {
     name?: string;
     contactInfo?: string;
     active?: boolean;
+    createdAt?: string | null;
+}
+
+export interface IPermissionFilter {
+    name?: string;
+    module?: string;
+    method?: string;
+    route?: string;
     createdAt?: string | null;
 }
 

@@ -360,33 +360,6 @@ const ProductTable = (props: IProps) => {
                       </div>
                     </div>
                   </th>
-                  {/* <th
-                    scope="col"
-                    className="px-6 py-3 text-start text-base font-medium text-gray-500 bg-green-50 uppercase flex flex-nowrap items-center gap-x-1"
-                  >
-                    <div className="flex flex-nowrap items-center gap-x-1">
-                      Mô tả
-                      <div className="hs-dropdown [--auto-close:inside] [--placement:bottom-left] [--strategy:absolute] relative inline-flex">
-                        <button
-                          id="hs-dropdown-filter-description"
-                          type="button"
-                          className="hs-dropdown-toggle inline-flex items-center gap-x-2 text-gray-400 shadow-2xs focus:text-gray-400 hover:text-gray-800 disabled:opacity-50 disabled:pointer-events-none"
-                          aria-haspopup="menu"
-                          aria-expanded="false"
-                          aria-label="Dropdown"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 16 16"
-                            fill="currentColor"
-                            className="size-3 shrink-0"
-                          >
-                            <path d="M14 2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v2.172a2 2 0 0 0 .586 1.414l2.828 2.828A2 2 0 0 1 6 9.828v4.363a.5.5 0 0 0 .724.447l2.17-1.085A2 2 0 0 0 10 11.763V9.829a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 0 14 4.172V2Z" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </th> */}
                   <th
                     scope="col"
                     className="px-4 py-3 text-end text-xs font-medium text-gray-500 bg-green-50 uppercase"

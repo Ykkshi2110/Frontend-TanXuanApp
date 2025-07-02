@@ -25,6 +25,9 @@ const PermissionRow = (props: IProps) => {
       <td className="px-4 py-3 whitespace-nowrap text-xs font-medium text-black-800">
         {permissionData?.name}
       </td>
+      <td className="px-4 py-3 whitespace-nowrap text-xs text-black-800">
+        {permissionData?.module.toUpperCase()}
+      </td>
       <td className={`px-4 py-3 whitespace-nowrap text-xs font-semibold ${methodColor(permissionData?.method ?? "")}`}>
         {permissionData?.method.toUpperCase()}
       </td>
@@ -32,10 +35,7 @@ const PermissionRow = (props: IProps) => {
         {permissionData?.route}
       </td>
       <td className="px-4 py-3 whitespace-nowrap text-xs text-black-800">
-        {dayjs.unix(Number(permissionData?.createdAt)).format("DD/MM/YYYY")}
-      </td>
-      <td className="px-4 py-3 whitespace-nowrap text-xs text-black-800">
-        {dayjs.unix(Number(permissionData?.updatedAt)).format("DD/MM/YYYY")}
+        {permissionData?.createdAt ? dayjs.unix(Number(permissionData?.createdAt)).format("DD/MM/YYYY") : ""}
       </td>
       <td className="px-4 py-3 whitespace-nowrap text-end">
         <button

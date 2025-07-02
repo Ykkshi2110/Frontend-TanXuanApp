@@ -1,35 +1,112 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import { apiCreateRole, apiUpdateRole } from "../../../config/api";
 import {
-    apiCreatePermission,
-    apiUpdatePermission
-} from "../../../config/api";
-import { IPermission } from "../../../types/backend";
+  getPermissionsByModule,
+  groupPermissionsByModule,
+} from "../../../config/permission";
+import { usePermission } from "../../../hooks";
+import { IRole } from "../../../types/backend";
 import CustomToast from "../../common/toast.message";
+import RolePermissionAccordion from "./accordion.permission";
 
 interface IProps {
   isOpenActionModal: boolean;
-  dataInit?: IPermission | null;
-  setDataInit?: React.Dispatch<React.SetStateAction<IPermission | null>>;
+  dataInit?: IRole | null;
+  setDataInit?: React.Dispatch<React.SetStateAction<IRole | null>>;
   onClose: () => void;
 }
 
 // https://www.thepolyglotdeveloper.com/2015/05/use-regex-to-test-password-strength-in-javascript/ (regex password)
-const createPermissionSchema = yup.object({
+const createRoleSchema = yup.object({
   id: yup.string().optional(),
   name: yup.string().required("Tên không được để trống"),
-  module: yup.string().required("Module không được để trống"),
-  route: yup.string().required("Đường dẫn không được để trống"),
-  method: yup.string().required("Phương thức không được để trống"),
+  description: yup.string().required("Mô tả không được để trống"),
+  // permission: yup.array().of(yup.object({
+  //   id: yup.string(),
+  // })),
 });
 
-type FormValues = yup.InferType<typeof createPermissionSchema>;
+type FormValues = yup.InferType<typeof createRoleSchema>;
 
-const PermissionModal = (props: IProps) => {
+const RoleModal = (props: IProps) => {
   const { isOpenActionModal, dataInit, onClose } = props;
+
+  const [checkedPermission, setCheckedPermission] = useState<{ id: string }[]>([]);
+
+
+  const handleToggleSinglePermission = (permissionId: string) => {
+    setCheckedPermission((prev) => {
+      const isChecked = prev.some((item) => item.id === permissionId);
+      if (isChecked) {
+        return prev.filter((item) => item.id !== permissionId);
+      }
+      return [...prev, { id: permissionId }];
+    });
+  };
+
+  const handleToggleAllPermissionInModule = (module: string) => {
+    const permissionsInModule = getPermissionsByModule(
+      permissions?.data?.data?.result ?? [],
+      module
+    );
+
+    const checkedPermissionsInModule = permissionsInModule.every((permission) =>
+      checkedPermission.some((item) => item.id === permission.id)
+    );
+
+    const isNotInModule = (item: { id: string }) => !permissionsInModule.some((permission) => permission.id === item.id);
+
+    if (checkedPermissionsInModule) {
+      setCheckedPermission((prev) =>
+        prev.filter(isNotInModule)
+      );
+    } else {
+      setCheckedPermission((prev) => [
+        ...prev,
+        ...permissionsInModule.map((permission) => ({ id: permission.id as string })),
+      ]);
+    }
+
+    setIsAccordionOpen((prev) => ({
+      ...prev,
+      [module]: !prev[module],
+    }));
+  };
+
+  const { permissions } = usePermission();
+
+  const modules = groupPermissionsByModule(
+    permissions?.data?.data?.result ?? []
+  );
+
+  const [isAccordionOpen, setIsAccordionOpen] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  useEffect(() => {
+    if (isOpenActionModal) {
+      setIsAccordionOpen(
+        Object.fromEntries(modules.map((module) => [module.module, false]))
+      );
+    }
+    if(dataInit && isOpenActionModal){
+      setIsAccordionOpen(
+        Object.fromEntries(modules.map((module) => [module.module, true]))
+      );
+      setCheckedPermission(dataInit?.permissions ?? []);
+    }
+  }, [isOpenActionModal, dataInit]);
+
+  const handleClickAccordion = (module: string) => {
+    setIsAccordionOpen((prev) => ({
+      ...prev,
+      [module]: !prev[module],
+    }));
+  };
 
   const {
     register,
@@ -37,13 +114,14 @@ const PermissionModal = (props: IProps) => {
     reset,
     formState: { errors },
   } = useForm<FormValues>({
-    resolver: yupResolver(createPermissionSchema) as any,
+    resolver: yupResolver(createRoleSchema) as any,
     defaultValues: {
       id: dataInit?.id ?? "",
       name: dataInit?.name ?? "",
-      module: dataInit?.module ?? "",
-      route: dataInit?.route ?? "",
-      method: dataInit?.method ?? "",
+      description: dataInit?.description ?? "",
+      // permission: dataInit?.permission?.map((permission) => ({
+      //   id: permission.id,
+      // })) ?? [],
     },
   });
 
@@ -51,24 +129,26 @@ const PermissionModal = (props: IProps) => {
   useEffect(() => {
     reset({
       name: dataInit?.name ?? "",
-      module: dataInit?.module ?? "",
-      route: dataInit?.route ?? "",
-      method: dataInit?.method ?? "",
+      description: dataInit?.description ?? "",
+      // permission: dataInit?.permission?.map((permission) => ({
+      //   id: permission.id,
+      // })) ?? [],
     });
   }, [dataInit, reset]);
 
-  const handleSubmitPermission = handleSubmit(async (valuesForm: FormValues) => {
+  const handleSubmitRole = handleSubmit(async (valuesForm: FormValues) => {
     if (dataInit?.id) {
-      const transformedValues = {
+      const transformedUpdateValues = {
         id: dataInit?.id,
         ...valuesForm,
+        permissions: checkedPermission,
       };
 
-      const res = await apiUpdatePermission(transformedValues);
+      const res = await apiUpdateRole(transformedUpdateValues);
       if (res?.data?.data) {
         toast.success(
           <CustomToast
-            message="Cập nhật quyền hạn thành công!"
+            message="Cập nhật vai trò thành công!"
             className="text-green-600"
           />
         );
@@ -77,17 +157,21 @@ const PermissionModal = (props: IProps) => {
       } else {
         toast.error(
           <CustomToast
-            message="Cập nhật quyền hạn thất bại!"
+            message="Cập nhật vai trò thất bại!"
             className="text-red-600"
           />
         );
       }
     } else {
-      const res = await apiCreatePermission(valuesForm);
+      const transformedCreateValues = {
+        ...valuesForm,
+        permissions: checkedPermission,
+      };
+      const res = await apiCreateRole(transformedCreateValues);
       if (res?.data?.data) {
         toast.success(
           <CustomToast
-            message="Thêm quyền hạn thành công!"
+            message="Thêm vai trò thành công!"
             className="text-green-600"
           />
         );
@@ -96,7 +180,7 @@ const PermissionModal = (props: IProps) => {
       } else {
         toast.error(
           <CustomToast
-            message="Thêm quyền hạn thất bại!"
+            message="Thêm vai trò thất bại!"
             className="text-red-600"
           />
         );
@@ -109,7 +193,7 @@ const PermissionModal = (props: IProps) => {
       id="hs-medium-modal"
       className={`hs-overlay ${
         isOpenActionModal ? "open opened" : "hidden"
-      } size-full fixed top-0 start-0 z-50 overflow-x-hidden overflow-y-auto pointer-events-none`}
+      } size-full fixed top-0 start-0 z-50 overflow-x-hidden pointer-events-none`}
       tabIndex={-1}
       aria-labelledby="hs-medium-modal-label"
     >
@@ -123,7 +207,7 @@ const PermissionModal = (props: IProps) => {
               id="hs-medium-modal-label"
               className="font-bold text-gray-800 text-lg"
             >
-              {dataInit ? "Cập nhật quyền hạn" : "Thêm mới quyền hạn"}
+              {dataInit ? "Cập nhật vai trò" : "Thêm mới vai trò"}
             </h3>
             <button
               type="button"
@@ -149,9 +233,8 @@ const PermissionModal = (props: IProps) => {
               </svg>
             </button>
           </div>
-
-          <form onSubmit={handleSubmitPermission}>
-            <div className="p-4 overflow-y-auto">
+          <form onSubmit={handleSubmitRole}>
+            <div className="p-4 overflow-y-auto max-h-[460px]">
               <div className="grid sm:grid-cols-1 gap-6">
                 {/* Name */}
                 <div>
@@ -159,14 +242,14 @@ const PermissionModal = (props: IProps) => {
                     className="block text-sm font-medium text-gray-700 mb-2"
                     htmlFor="name"
                   >
-                    Tên quyền hạn
+                    Tên vai trò
                   </label>
                   <input
                     id="name"
                     type="text"
                     className="block border-1 w-full px-4 py-3 text-xs text-gray-800 bg-gray-100 rounded focus:outline-none focus:ring-2 focus:ring-black"
                     {...register("name")}
-                    placeholder="Nhập tên quyền hạn"
+                    placeholder="Nhập tên vai trò"
                     defaultValue={dataInit?.name}
                   />
                   {errors.name && (
@@ -174,80 +257,55 @@ const PermissionModal = (props: IProps) => {
                   )}
                 </div>
 
-                {/* Module */}
+                {/* Description */}
                 <div>
                   <label
                     className="block text-sm font-medium text-gray-700 mb-2"
-                    htmlFor="module"
+                    htmlFor="description"
                   >
-                    Module
+                    Mô tả vai trò
                   </label>
                   <input
-                    id="module"
+                    id="description"
                     type="text"
                     className="block border-1 w-full px-4 py-3 text-xs text-gray-800 bg-gray-100 rounded focus:outline-none focus:ring-2 focus:ring-black"
-                    placeholder="Nhập module"
-                    {...register("module")}
-                    defaultValue={dataInit?.module}
+                    {...register("description")}
+                    placeholder="Nhập mô tả vai trò"
+                    defaultValue={dataInit?.description}
                   />
-                  {errors.module && (
-                    <p className="text-red-500">{errors.module.message}</p>
+                  {errors.description && (
+                    <p className="text-red-500">{errors.description.message}</p>
                   )}
                 </div>
 
-                {/* Route */}
+                {/* Permission */}
                 <div>
                   <label
                     className="block text-sm font-medium text-gray-700 mb-2"
-                    htmlFor="route"
+                    htmlFor="permission"
                   >
-                    Đường dẫn
+                    Quyền hạn
                   </label>
-                  <input
-                    id="route"
-                    type="text"
-                    className="block border-1 w-full px-4 py-3 text-xs text-gray-800 bg-gray-100 rounded focus:outline-none focus:ring-2 focus:ring-black"
-                    placeholder="Nhập đường dẫn"
-                    {...register("route")}
-                    defaultValue={dataInit?.route}
-                  />
-                  {errors.route && (
-                    <p className="text-red-500">{errors.route.message}</p>
-                  )}
+                  <div className="flex flex-col gap-y-2">
+                    {modules.map((module) => (
+                      <RolePermissionAccordion
+                        title={module.module}
+                        content={getPermissionsByModule(
+                          permissions?.data?.data?.result ?? [],
+                          module.module
+                        )}
+                        key={module.module}
+                        isAccordionOpen={isAccordionOpen}
+                        handleClickAccordion={() =>
+                          handleClickAccordion(module.module)
+                        }
+                        handleCheckedPermission={handleToggleSinglePermission}
+                        handleToggleAllPermissionInModule={handleToggleAllPermissionInModule}
+                        checkedPermission={checkedPermission}
+                      />
+                    ))}
+                  </div>
                 </div>
-
-                {/* Method */}
-                <div>
-                  <label
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                    htmlFor="method"
-                  >
-                    Phương thức
-                  </label>
-                  <select
-                    className="block border-1 w-full px-4 py-3 text-xs text-gray-800 bg-gray-100 rounded focus:outline-none focus:ring-2 focus:ring-black"
-                    id="method"
-                    {...register("method")}
-                    defaultValue={dataInit?.method}
-                  >
-                    <option className="text-gray-800 bg-gray-100" value="">
-                      Chọn phương thức...
-                    </option>
-                    <option className="text-gray-800 bg-gray-100" value="GET">
-                      GET
-                    </option>
-                    <option className="text-gray-800 bg-gray-100" value="POST">
-                      POST
-                    </option>
-                    <option className="text-gray-800 bg-gray-100" value="DELETE">
-                      DELETE
-                    </option>
-                  </select>
-                  {errors.method && (
-                    <p className="text-red-500">{errors.method.message}</p>
-                  )}
-                </div>
-            
               </div>
             </div>
             <div className="flex justify-end items-center gap-x-2 py-3 px-4 border-t">
@@ -273,4 +331,4 @@ const PermissionModal = (props: IProps) => {
   );
 };
 
-export default PermissionModal;
+export default RoleModal;

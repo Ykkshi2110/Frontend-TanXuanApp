@@ -1,5 +1,5 @@
 import axiosClient from "./axios-customize"
-import { GetAccount, IAccount, IBackendResponse, ICategory, ICategoryFilter, IModelPagination, IPermission, IProduct, IProductFilter, IRole, ISupplier, ISupplierFilter, IUser, IUserFilter } from "../types/backend"
+import { GetAccount, IAccount, IBackendResponse, ICategory, ICategoryFilter, IModelPagination, IPermission, IPermissionFilter, IProduct, IProductFilter, IRole, ISupplier, ISupplierFilter, IUser, IUserFilter } from "../types/backend"
 
 /* Module Auth */
 export const apiLogin = (username: string, password: string) => {
@@ -46,6 +46,19 @@ export const apiFetchAllRole = ( query: string ) => {
     return axiosClient.get<IBackendResponse<IModelPagination<IRole>>>(`/roles?${query}`)
 }
 
+export const apiUpdateRole = ( role: IRole ) => {
+    return axiosClient.post<IBackendResponse<IRole>>(`/roles/update`, {...role})
+}
+
+export const apiCreateRole = ( role: IRole ) => {
+    return axiosClient.post<IBackendResponse<IRole>>(`/roles/create`, {...role})
+}
+
+export const apiDeleteRole = ( id: string ) => {
+    return axiosClient.delete<IBackendResponse<IRole>>(`/roles/delete/${id}`)
+}
+
+
 /* Module Product */
 export const apiFetchAllProduct = ( query: string ) => {
     return axiosClient.get<IBackendResponse<IModelPagination<IProduct>>>(`/products?${query}`)
@@ -82,6 +95,10 @@ export const apiSearchSupplier = ( query: string, supplierFilter: ISupplierFilte
 
 export const apiSearchCategory = ( query: string, categoryFilter: ICategoryFilter ) => {
     return axiosClient.post<IBackendResponse<IModelPagination<ICategory>>>(`/categories/filter?${query}`, {...categoryFilter})
+}
+
+export const apiSearchPermission = ( query: string, permissionFilter: IPermissionFilter ) => {
+    return axiosClient.post<IBackendResponse<IModelPagination<IPermission>>>(`/permissions/filter?${query}`, {...permissionFilter})
 }
 
 /* Module Category */

@@ -31,7 +31,7 @@ const UserRow = (props: IProps) => {
         {userData?.address}
       </td>
       <td className="px-4 py-3 whitespace-nowrap text-xs text-black-800">
-        {dayjs.unix(Number(userData?.createdAt)).format("DD/MM/YYYY")}
+        {userData?.createdAt ? dayjs.unix(Number(userData?.createdAt)).format("DD/MM/YYYY") : ""}
       </td>
       <td className="px-4 py-3 whitespace-nowrap text-end">
         <button

@@ -30,10 +30,10 @@ const CategoryRow = (props: IProps) => {
         )}
       </td>
       <td className="px-4 py-3 whitespace-nowrap text-xs text-black-800">
-        {dayjs.unix(Number(categoryData?.createdAt)).format("DD/MM/YYYY")}
+        {categoryData?.createdAt ? dayjs.unix(Number(categoryData?.createdAt)).format("DD/MM/YYYY") : ""}
       </td>
       <td className="px-4 py-3 whitespace-nowrap text-xs text-black-800">
-        {dayjs.unix(Number(categoryData?.updatedAt)).format("DD/MM/YYYY")}
+        {categoryData?.updatedAt ? dayjs.unix(Number(categoryData?.updatedAt)).format("DD/MM/YYYY") : ""}
       </td>
       <td className="px-4 py-3 whitespace-nowrap text-end">
         <button

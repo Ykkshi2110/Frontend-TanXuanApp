@@ -1,16 +1,15 @@
 import "react-datepicker/dist/react-datepicker.css";
 import { IRole } from "../../../types/backend";
-import RoleRow from "./roles.row";
+import RoleRow from "./role.row";
 
 interface IProps {
   roleData?: IRole[] | null;
   onEditClick: (role: IRole) => void;
   onDeleteClick: (role: IRole) => void;
-  onViewClick: (role: IRole) => void;
 }
 
 const RoleTable = (props: IProps) => {
-  const { roleData, onEditClick, onDeleteClick, onViewClick } = props;
+  const { roleData, onEditClick, onDeleteClick } = props;
 
   return (
     <div className="flex flex-col">
@@ -67,7 +66,6 @@ const RoleTable = (props: IProps) => {
                     roleData={role}
                     onEditClick={() => onEditClick(role)}
                     onDeleteClick={() => onDeleteClick(role)}
-                    onViewClick={() => onViewClick(role)}
                   />
                 ))}
               </tbody>

@@ -4,20 +4,31 @@ import LoadingSpinner from "../../components/common/loading.spinner";
 import Pagination from "../../components/common/pagination";
 
 import { Plus } from "lucide-react";
-import PermissionTable from "../../components/admin/permissions/permission.table";
-import { apiFetchAllPermission } from "../../config/api";
-import { IPermission } from "../../types/backend";
+import { useDebounce } from "use-debounce";
 import PermissionModal from "../../components/admin/permissions/permission.modal";
 import PermissionModalDelete from "../../components/admin/permissions/permission.modal.delete";
+import PermissionTable from "../../components/admin/permissions/permission.table";
+import { apiFetchAllPermission, apiSearchPermission } from "../../config/api";
+import { IPermission, IPermissionFilter } from "../../types/backend";
 
 const PermissionPage = () => {
   const MAX_PERMISSIONS_PAGE = 5;
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedPermission, setSelectedPermission] = useState<IPermission | null>(null);
+  const [searchCurrentPage, setSearchCurrentPage] = useState(1);
+  const [totalSearchPage, setTotalSearchPage] = useState(0);
+  const [selectedPermission, setSelectedPermission] =
+    useState<IPermission | null>(null);
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isOpenActionModal, setIsOpenActionModal] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-
+  const [filters, setFilters] = useState<IPermissionFilter>({
+    name: "",
+    module: "",
+    method: "",
+    route: "",
+    createdAt: null,
+  });
+  const [debouncedFilters] = useDebounce(filters, 500);
 
   const {
     isPending,
@@ -26,7 +37,7 @@ const PermissionPage = () => {
   } = useQuery({
     queryKey: [["fetchAllPermissions"], currentPage],
     queryFn: () =>
-      apiFetchAllPermission(`page=${currentPage}&size=${MAX_PERMISSIONS_PAGE}`)
+      apiFetchAllPermission(`page=${currentPage}&size=${MAX_PERMISSIONS_PAGE}`),
   });
 
   const [displayData, setDisplayData] = useState<IPermission[] | null>(
@@ -39,34 +50,32 @@ const PermissionPage = () => {
     }
   }, [permissions]);
 
-  // Search suppliers
-//   const { data: searchData, error: searchError } = useQuery({
-//     queryKey: ["searchSuppliers", debouncedFilters, searchCurrentPage],
-//     queryFn: () =>
-//       apiSearchProduct(`page=${searchCurrentPage}&size=${MAX_PRODUCTS_PAGE}`, {
-//         name: debouncedFilters.name,
-//         quantity: debouncedFilters.quantity,
-//         unit: debouncedFilters.unit,
-//         price: debouncedFilters.price,
-//         ...(debouncedFilters.category?.id
-//           ? { category: { id: debouncedFilters.category.id } }
-//           : {}),
-//         ...(debouncedFilters.supplier?.id
-//           ? { supplier: { id: debouncedFilters.supplier.id } }
-//           : {}),
-//       }),
-//     enabled: Object.values(debouncedFilters).some(
-//       (value) => value !== "" || value !== null || value !== 0
-//     ),
-//   });
+  // Search permission
+  const { data: searchData, error: searchError } = useQuery({
+    queryKey: ["searchPermissions", debouncedFilters, searchCurrentPage],
+    queryFn: () =>
+      apiSearchPermission(
+        `page=${searchCurrentPage}&size=${MAX_PERMISSIONS_PAGE}`,
+        {
+          name: debouncedFilters.name,
+          module: debouncedFilters.module,
+          method: debouncedFilters.method,
+          route: debouncedFilters.route,
+          createdAt: debouncedFilters.createdAt,
+        }
+      ),
+    enabled: Object.values(debouncedFilters).some(
+      (value) => value !== "" || value !== null
+    ),
+  });
 
-//   // Set total search page
-//   useEffect(() => {
-//     if (searchData) {
-//       setTotalSearchPage(searchData?.data?.data?.meta?.pages ?? 0);
-//       setDisplayData(searchData?.data?.data?.result ?? []);
-//     }
-//   }, [searchData]);
+  // Set total search page
+  useEffect(() => {
+    if (searchData) {
+      setTotalSearchPage(searchData?.data?.data?.meta?.pages ?? 0);
+      setDisplayData(searchData?.data?.data?.result ?? []);
+    }
+  }, [searchData]);
 
   // Set display data
   useEffect(() => {
@@ -75,20 +84,12 @@ const PermissionPage = () => {
     }
   }, [permissions, isSearching]);
 
-//   const handleFilterChange = (key: string, value: string | number) => {
-//     setFilters((prev) => {
-//       let newValue;
-//       if (key === "supplier") {
-//         newValue = { supplier: { id: value as string } };
-//       } else if (key === "category") {
-//         newValue = { category: { id: value as string } };
-//       } else {
-//         newValue = { [key]: value };
-//       }
-//       return { ...prev, ...newValue };
-//     });
-//     setIsSearching(!!value);
-//   };
+  const handleFilterChange = (key: string, value: string) => {
+    setFilters((prev) => {
+      return { ...prev, [key]: value };
+    });
+    setIsSearching(!!value);
+  };
 
   const queryClient = useQueryClient();
   const reloadTable = () => {
@@ -102,7 +103,7 @@ const PermissionPage = () => {
 
   const handleOpenEditModal = (permission: IPermission) => {
     setIsOpenActionModal(true);
-    setSelectedPermission(permission);    
+    setSelectedPermission(permission);
   };
 
   const handleOpenDeleteModal = (permission: IPermission) => {
@@ -110,13 +111,13 @@ const PermissionPage = () => {
     setSelectedPermission(permission);
   };
 
-//   if (error || searchError) {
-//     return (
-//       <div>
-//         <p>Something went wrong!</p>
-//       </div>
-//     );
-//   }
+    if (error || searchError) {
+      return (
+        <div>
+          <p>Something went wrong!</p>
+        </div>
+      );
+    }
 
   return (
     <div className="container mx-auto p-4 relative">
@@ -141,20 +142,16 @@ const PermissionPage = () => {
               permissionData={displayData}
               onEditClick={handleOpenEditModal}
               onDeleteClick={handleOpenDeleteModal}
-            //   filters={filters}
-            //   onFilterChange={handleFilterChange}
+              filters={filters}
+              onFilterChange={handleFilterChange}
             />
           </div>
 
           <div className="flex justify-center">
             <Pagination
-              currentPage={currentPage}
-              setCurrentPage={
-                setCurrentPage
-              }
-              total={
-                permissions?.data.data?.meta.pages ?? 0
-              }
+              currentPage={isSearching ? searchCurrentPage : currentPage}
+              setCurrentPage={isSearching ? setSearchCurrentPage : setCurrentPage}
+              total={isSearching ? totalSearchPage : permissions?.data.data?.meta.pages ?? 0}
             />
           </div>
         </>

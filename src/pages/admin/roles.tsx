@@ -4,9 +4,10 @@ import LoadingSpinner from "../../components/common/loading.spinner";
 import Pagination from "../../components/common/pagination";
 
 import { Plus } from "lucide-react";
-import RoleTable from "../../components/admin/roles/roles.table";
+import RoleTable from "../../components/admin/roles/role.table";
 import { apiFetchAllRole } from "../../config/api";
 import { IRole } from "../../types/backend";
+import RoleModal from "../../components/admin/roles/role.modal";
 
 const RolePage = () => {
   const MAX_PERMISSIONS_PAGE = 5;
@@ -14,7 +15,6 @@ const RolePage = () => {
   const [selectedRole, setSelectedRole] = useState<IRole | null>(null);
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isOpenActionModal, setIsOpenActionModal] = useState(false);
-  const [isOpenViewModal, setIsOpenViewModal] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
 
 
@@ -109,10 +109,6 @@ const RolePage = () => {
     setSelectedRole(role);
   };
 
-  const handleOpenViewModal = (role: IRole) => {
-    setIsOpenViewModal(true);
-    setSelectedRole(role);
-  };
 
 //   if (error || searchError) {
 //     return (
@@ -142,7 +138,6 @@ const RolePage = () => {
         <>
           <div className="mb-6">
             <RoleTable
-              onViewClick={handleOpenViewModal}
               roleData={displayData}
               onEditClick={handleOpenEditModal}
               onDeleteClick={handleOpenDeleteModal}
@@ -165,15 +160,15 @@ const RolePage = () => {
         </>
       )}
 
-      {/* <ProductModal
+      <RoleModal
         isOpenActionModal={isOpenActionModal}
-        dataInit={selectedProduct}
-        setDataInit={setSelectedProduct}
+        dataInit={selectedRole}
+        setDataInit={setSelectedRole}
         onClose={() => {
-          setSelectedProduct(null);
+          setSelectedRole(null);
           setIsOpenActionModal(false);
         }}
-      /> */}
+      />
 
       {/* <ProductModalDelete
         isOpenDeleteModal={isOpenDeleteModal}

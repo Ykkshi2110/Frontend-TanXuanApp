@@ -18,7 +18,7 @@ const ProductModalDetail = (props: IProductModalDetailProps) => {
       id="hs-large-modal-view"
       className={`hs-overlay ${
         isOpenViewModal ? "open opened" : "hidden"
-      } hs-overlay-open:opacity-100 hs-overlay-open:duration-500 size-full fixed top-0 start-0 z-50 opacity-0 overflow-x-hidden transition-all overflow-y-auto pointer-events-none`}
+      } hs-overlay-open:opacity-100 hs-overlay-open:duration-500 size-full fixed top-0 start-0 z-50 opacity-0 overflow-x-hidden transition-all pointer-events-none`}
       aria-labelledby="hs-large-modal-label-view"
     >
       {isOpenViewModal && (
@@ -57,7 +57,7 @@ const ProductModalDetail = (props: IProductModalDetailProps) => {
               </svg>
             </button>
           </div>
-          <div className="p-4 overflow-y-auto grid grid-row-4 gap-4">
+          <div className="p-4 overflow-y-auto grid grid-row-4 gap-4 max-h-[460px]">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
               <div className="col-span-1">
                 <img
