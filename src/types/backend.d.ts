@@ -15,10 +15,12 @@ export interface IAccount {
             id: string;
             name: string;
             description: string;
-            permission: {
+            permissions: {
                 id: string;
                 name: string;
                 route: string;
+                method: string;
+                module: string;
             }[]
         }
     }
@@ -111,6 +113,14 @@ export interface IProduct {
     createdBy?: string;
 }
 
+export interface ICategory {
+    id?: string;
+    name: string;
+    active: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
 export interface IProductFilter {
     name?: string;
     quantity?: number;
@@ -124,13 +134,6 @@ export interface IProductFilter {
     };
 }
 
-export interface ICategory {
-    id?: string;
-    name: string;
-    active: boolean;
-    createdAt?: string;
-    updatedAt?: string;
-}
 
 export interface ICategoryFilter {
     name?: string;
@@ -160,6 +163,11 @@ export interface IPermissionFilter {
     module?: string;
     method?: string;
     route?: string;
+    createdAt?: string | null;
+}
+
+export interface IRoleFilter {
+    name?: string;
     createdAt?: string | null;
 }
 

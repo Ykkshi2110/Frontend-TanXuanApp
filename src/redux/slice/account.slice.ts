@@ -20,10 +20,12 @@ interface IAccountState {
             id?: string;
             name?: string;
             description?: string;
-            permission?: {
+            permissions?: {
                 id: string;
                 name: string;
                 route: string;
+                method: string;
+                module: string;
             }[]
         };
     }
@@ -42,7 +44,7 @@ const initialState: IAccountState = {
             id: '',
             name: '',
             description: '',
-            permission: []
+            permissions: []
         }
     }
 };
@@ -59,7 +61,7 @@ export const accountSlice = createSlice({
             state.user.name = action.payload.name;
             state.user.role = action?.payload?.role;
             if (!action?.payload?.role) state.user.role = {};
-            state.user.role.permission = action?.payload?.role?.permission ?? [];
+            state.user.role.permissions = action?.payload?.role?.permissions ?? [];
         },
         setRefreshTokenAction: (state, action) => {
             state.isRefreshToken = action.payload?.status ?? false;
@@ -78,7 +80,7 @@ export const accountSlice = createSlice({
                     id: '',
                     name: '',
                     description: '',
-                    permission: []
+                    permissions: []
                 }
             }
         }
@@ -99,7 +101,7 @@ export const accountSlice = createSlice({
                 state.user.name = action.payload?.user?.name;
                 state.user.role = action.payload?.user?.role;
                 if (!action.payload?.user?.role) state.user.role = {};
-                state.user.role.permission = action.payload?.user?.role?.permission ?? [];
+                state.user.role.permissions = action.payload?.user?.role?.permissions ?? [];
             }
         })
         builder.addCase(fetchUserInfo.rejected, (state) => {

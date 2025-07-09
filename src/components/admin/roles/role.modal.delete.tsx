@@ -1,25 +1,25 @@
 import { toast } from "react-toastify";
-import { apiDeleteCategory } from "../../../config/api";
-import { ICategory } from "../../../types/backend";
+import { apiDeleteRole } from "../../../config/api";
+import { IRole } from "../../../types/backend";
 import CustomToast from "../../common/toast.message";
 
-interface ICategoryModalDeleteProps {
+interface IRoleModalDeleteProps {
   isOpenDeleteModal: boolean;
-  dataInit?: ICategory | null;
-  setDataInit: React.Dispatch<React.SetStateAction<ICategory | null>>;
+  dataInit?: IRole | null;
+  setDataInit: React.Dispatch<React.SetStateAction<IRole | null>>;
   onClose: () => void;
   reloadTable: () => void;
 }
 
-const CategoryModalDelete = (props: ICategoryModalDeleteProps) => {
+const RoleModalDelete = (props: IRoleModalDeleteProps) => {
   const { isOpenDeleteModal, dataInit, setDataInit, onClose, reloadTable } =
     props;
   const handleDelete = async () => {
-    const res = await apiDeleteCategory(dataInit?.id ?? "");
-    if (res?.data?.statusCode === 200) {
-      toast.success(<CustomToast message="Xóa danh mục thành công!" />);
+    const res = await apiDeleteRole(dataInit?.id ?? "");
+    if (res.status === 204) {
+      toast.success(<CustomToast message="Xóa vai trò thành công!" />);
     } else {
-      toast.error(<CustomToast message="Xóa danh mục thất bại!" />);
+      toast.error(<CustomToast message="Xóa vai trò thất bại!" />);
     }
     onClose();
   };
@@ -43,7 +43,7 @@ const CategoryModalDelete = (props: ICategoryModalDeleteProps) => {
               id="hs-basic-modal-delete-label"
               className="font-bold text-gray-800 text-lg"
             >
-              Bạn có chắc chắn muốn xóa danh mục: {dataInit?.name}?
+              Bạn có chắc chắn muốn xóa vai trò: {dataInit?.name}?
             </h3>
             <button
               type="button"
@@ -71,7 +71,7 @@ const CategoryModalDelete = (props: ICategoryModalDeleteProps) => {
           </div>
           <div className="p-4 overflow-y-auto">
             <p className="mt-1 text-gray-800 text-sm">
-              Hành động này không thể hoàn tác. Danh mục này sẽ bị xóa vĩnh viễn
+              Hành động này không thể hoàn tác. Vai trò này sẽ bị xóa vĩnh viễn
               khỏi hệ thống.
             </p>
           </div>
@@ -100,4 +100,4 @@ const CategoryModalDelete = (props: ICategoryModalDeleteProps) => {
   );
 };
 
-export default CategoryModalDelete;
+export default RoleModalDelete;

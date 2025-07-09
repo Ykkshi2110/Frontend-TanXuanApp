@@ -5,18 +5,26 @@ import Pagination from "../../components/common/pagination";
 
 import { Plus } from "lucide-react";
 import RoleTable from "../../components/admin/roles/role.table";
-import { apiFetchAllRole } from "../../config/api";
-import { IRole } from "../../types/backend";
+import { apiFetchAllRole, apiSearchRole } from "../../config/api";
+import { IRole, IRoleFilter } from "../../types/backend";
 import RoleModal from "../../components/admin/roles/role.modal";
+import RoleModalDelete from "../../components/admin/roles/role.modal.delete";
+import { useDebounce } from "use-debounce";
 
 const RolePage = () => {
-  const MAX_PERMISSIONS_PAGE = 5;
+  const MAX_ROLES_PAGE = 5;
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchCurrentPage, setSearchCurrentPage] = useState(1);
+  const [totalSearchPage, setTotalSearchPage] = useState(0);
   const [selectedRole, setSelectedRole] = useState<IRole | null>(null);
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isOpenActionModal, setIsOpenActionModal] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-
+  const [filters, setFilters] = useState<IRoleFilter>({
+    name: "",
+    createdAt: null,
+  });
+  const [debouncedFilters] = useDebounce(filters, 500);
 
   const {
     isPending,
@@ -25,7 +33,7 @@ const RolePage = () => {
   } = useQuery({
     queryKey: [["fetchAllRoles"], currentPage],
     queryFn: () =>
-      apiFetchAllRole(`page=${currentPage}&size=${MAX_PERMISSIONS_PAGE}`)
+      apiFetchAllRole(`page=${currentPage}&size=${MAX_ROLES_PAGE}`),
   });
 
   const [displayData, setDisplayData] = useState<IRole[] | null>(
@@ -38,34 +46,29 @@ const RolePage = () => {
     }
   }, [roles]);
 
-  // Search suppliers
-//   const { data: searchData, error: searchError } = useQuery({
-//     queryKey: ["searchSuppliers", debouncedFilters, searchCurrentPage],
-//     queryFn: () =>
-//       apiSearchProduct(`page=${searchCurrentPage}&size=${MAX_PRODUCTS_PAGE}`, {
-//         name: debouncedFilters.name,
-//         quantity: debouncedFilters.quantity,
-//         unit: debouncedFilters.unit,
-//         price: debouncedFilters.price,
-//         ...(debouncedFilters.category?.id
-//           ? { category: { id: debouncedFilters.category.id } }
-//           : {}),
-//         ...(debouncedFilters.supplier?.id
-//           ? { supplier: { id: debouncedFilters.supplier.id } }
-//           : {}),
-//       }),
-//     enabled: Object.values(debouncedFilters).some(
-//       (value) => value !== "" || value !== null || value !== 0
-//     ),
-//   });
+  // Search role
+  const { data: searchData, error: searchError } = useQuery({
+    queryKey: ["searchRoles", debouncedFilters, searchCurrentPage],
+    queryFn: () =>
+      apiSearchRole(
+        `page=${searchCurrentPage}&size=${MAX_ROLES_PAGE}`,
+        {
+          name: debouncedFilters.name,
+          createdAt: debouncedFilters.createdAt,
+        }
+      ),
+    enabled: Object.values(debouncedFilters).some(
+      (value) => value !== "" || value !== null
+    ),
+  });
 
-//   // Set total search page
-//   useEffect(() => {
-//     if (searchData) {
-//       setTotalSearchPage(searchData?.data?.data?.meta?.pages ?? 0);
-//       setDisplayData(searchData?.data?.data?.result ?? []);
-//     }
-//   }, [searchData]);
+  //   // Set total search page
+  useEffect(() => {
+    if (searchData) {
+      setTotalSearchPage(searchData?.data?.data?.meta?.pages ?? 0);
+      setDisplayData(searchData?.data?.data?.result ?? []);
+    }
+  }, [searchData]);
 
   // Set display data
   useEffect(() => {
@@ -74,20 +77,15 @@ const RolePage = () => {
     }
   }, [roles, isSearching]);
 
-//   const handleFilterChange = (key: string, value: string | number) => {
-//     setFilters((prev) => {
-//       let newValue;
-//       if (key === "supplier") {
-//         newValue = { supplier: { id: value as string } };
-//       } else if (key === "category") {
-//         newValue = { category: { id: value as string } };
-//       } else {
-//         newValue = { [key]: value };
-//       }
-//       return { ...prev, ...newValue };
-//     });
-//     setIsSearching(!!value);
-//   };
+  const handleFilterChange = (key: string, value: string) => {
+    setFilters((prev) => {
+      return {
+        ...prev,
+        [key]: value,
+      };
+    });
+    setIsSearching(!!value);
+  };
 
   const queryClient = useQueryClient();
   const reloadTable = () => {
@@ -101,7 +99,7 @@ const RolePage = () => {
 
   const handleOpenEditModal = (role: IRole) => {
     setIsOpenActionModal(true);
-    setSelectedRole(role);    
+    setSelectedRole(role);
   };
 
   const handleOpenDeleteModal = (role: IRole) => {
@@ -109,14 +107,13 @@ const RolePage = () => {
     setSelectedRole(role);
   };
 
-
-//   if (error || searchError) {
-//     return (
-//       <div>
-//         <p>Something went wrong!</p>
-//       </div>
-//     );
-//   }
+  if (error || searchError) {
+    return (
+      <div>
+        <p>Something went wrong!</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4 relative">
@@ -129,7 +126,7 @@ const RolePage = () => {
         >
           <Plus className="w-4 h-4 text-white mr-2" />
           Thêm vai trò
-        </button>   
+        </button>
       </div>
 
       {isPending ? (
@@ -141,19 +138,21 @@ const RolePage = () => {
               roleData={displayData}
               onEditClick={handleOpenEditModal}
               onDeleteClick={handleOpenDeleteModal}
-            //   filters={filters}
-            //   onFilterChange={handleFilterChange}
+              filters={filters}
+              onFilterChange={handleFilterChange}
             />
           </div>
 
           <div className="flex justify-center">
             <Pagination
-              currentPage={currentPage}
+              currentPage={isSearching ? searchCurrentPage : currentPage}
               setCurrentPage={
-                setCurrentPage
+                isSearching ? setSearchCurrentPage : setCurrentPage
               }
               total={
-                roles?.data.data?.meta.pages ?? 0
+                isSearching
+                  ? totalSearchPage
+                  : roles?.data.data?.meta.pages ?? 0
               }
             />
           </div>
@@ -170,26 +169,16 @@ const RolePage = () => {
         }}
       />
 
-      {/* <ProductModalDelete
+      <RoleModalDelete
         isOpenDeleteModal={isOpenDeleteModal}
-        dataInit={selectedProduct}
-        setDataInit={setSelectedProduct}
+        dataInit={selectedRole}
+        setDataInit={setSelectedRole}
         onClose={() => {
-          setSelectedProduct(null);
+          setSelectedRole(null);
           setIsOpenDeleteModal(false);
         }}
         reloadTable={reloadTable}
       />
-
-      <ProductModalDetail
-        isOpenViewModal={isOpenViewModal}
-        dataInit={selectedProduct}
-        setDataInit={setSelectedProduct}
-        onClose={() => {
-          setSelectedProduct(null);
-          setIsOpenViewModal(false);
-        }}
-      /> */}
     </div>
   );
 };

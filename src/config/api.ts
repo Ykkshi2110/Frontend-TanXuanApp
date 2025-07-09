@@ -1,5 +1,5 @@
 import axiosClient from "./axios-customize"
-import { GetAccount, IAccount, IBackendResponse, ICategory, ICategoryFilter, IModelPagination, IPermission, IPermissionFilter, IProduct, IProductFilter, IRole, ISupplier, ISupplierFilter, IUser, IUserFilter } from "../types/backend"
+import { GetAccount, IAccount, IBackendResponse, ICategory, ICategoryFilter, IModelPagination, IPermission, IPermissionFilter, IProduct, IProductFilter, IRole, IRoleFilter, ISupplier, ISupplierFilter, IUser, IUserFilter } from "../types/backend"
 
 /* Module Auth */
 export const apiLogin = (username: string, password: string) => {
@@ -99,6 +99,10 @@ export const apiSearchCategory = ( query: string, categoryFilter: ICategoryFilte
 
 export const apiSearchPermission = ( query: string, permissionFilter: IPermissionFilter ) => {
     return axiosClient.post<IBackendResponse<IModelPagination<IPermission>>>(`/permissions/filter?${query}`, {...permissionFilter})
+}
+
+export const apiSearchRole = ( query: string, roleFilter: IRoleFilter ) => {
+    return axiosClient.post<IBackendResponse<IModelPagination<IRole>>>(`/roles/filter?${query}`, {...roleFilter})
 }
 
 /* Module Category */

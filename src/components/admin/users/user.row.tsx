@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
 import { IUser } from "../../../types/backend";
+import Access from "../../../pages/auth/route/access";
 
 interface IProps {
   userData?: IUser;
@@ -34,6 +35,7 @@ const UserRow = (props: IProps) => {
         {userData?.createdAt ? dayjs.unix(Number(userData?.createdAt)).format("DD/MM/YYYY") : ""}
       </td>
       <td className="px-4 py-3 whitespace-nowrap text-end">
+        <Access permission={{name: "Update a user"}} hideChildren>
         <button
           type="button"
           className="inline-flex items-center gap-x-2 px-1 rounded-lg border border-transparent text-gray-800 hover:text-gray-900 hover:bg-gray-50 focus:outline-hidden focus:text-gray-800 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-500 dark:hover:text-gray-400 dark:focus:text-gray-400"
@@ -54,7 +56,9 @@ const UserRow = (props: IProps) => {
             />
           </svg>
         </button>
+        </Access>
 
+        <Access permission={{name: "Delete a user"}} hideChildren>
         <button
           type="button"
           className="inline-flex items-center gap-x-2 px-1 rounded-lg border border-transparent text-gray-800 hover:text-gray-900 hover:bg-gray-50 focus:outline-hidden focus:text-gray-800 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-500 dark:hover:text-gray-400 dark:focus:text-gray-400"
@@ -75,6 +79,7 @@ const UserRow = (props: IProps) => {
             />
           </svg>
         </button>
+        </Access>
       </td>
     </tr>
   );
