@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import Access from "../../pages/auth/route/access";
 
 const SideBar = () => {
   return (
@@ -62,6 +63,7 @@ const SideBar = () => {
                   Trang chủ
                 </NavLink>
               </li>
+              <Access permission={{ name: "Fetch all users" }} hideChildren>
               <li>
                 <NavLink
                   className={({ isActive }) =>
@@ -90,7 +92,9 @@ const SideBar = () => {
                   Người dùng
                 </NavLink>
               </li>
+              </Access>
 
+              <Access permission={{ name: "Fetch all products" }} hideChildren>
               <li>
                 <NavLink
                   className={({ isActive }) =>
@@ -116,6 +120,9 @@ const SideBar = () => {
                   Sản phẩm
                 </NavLink>
               </li>
+              </Access>
+
+              <Access permission={{ name: "Fetch all orders" }} hideChildren>
               <li>
                 <NavLink
                   className={({ isActive }) =>
@@ -143,6 +150,9 @@ const SideBar = () => {
                   Đơn hàng
                 </NavLink>
               </li>
+              </Access>
+
+              <Access permission={{ name: "Fetch all suppliers" }} hideChildren>
               <li>
                 <NavLink
                   className={({ isActive }) =>
@@ -168,6 +178,9 @@ const SideBar = () => {
                   Nhà cung cấp
                 </NavLink>
               </li>
+              </Access>
+
+              <Access permission={{ name: "Fetch all categories" }} hideChildren>
               <li>
                 <NavLink
                   className={({ isActive }) =>
@@ -198,6 +211,9 @@ const SideBar = () => {
                   Danh mục
                 </NavLink>
               </li>
+              </Access>
+
+              <Access permission={{ name: "Fetch all permissions" }} hideChildren>
               <li>
                 <NavLink
                   className={({ isActive }) =>
@@ -223,6 +239,9 @@ const SideBar = () => {
                   Quyền hạn
                 </NavLink>
               </li>
+              </Access>
+
+              <Access permission={{ name: "Fetch all roles" }} hideChildren>
               <li>
                 <NavLink
                   className={({ isActive }) =>
@@ -248,6 +267,7 @@ const SideBar = () => {
                   Vai trò
                 </NavLink>
               </li>
+              </Access>
             </ul>
           </nav>
         </div>

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { apiRegister } from "../../config/api";
+import { apiRegisterForCustomer } from "../../config/api";
 import { toast } from "react-toastify";
 import CustomToast from "../../components/common/toast.message";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -22,11 +22,11 @@ const RegisterPage = () => {
 
   const handleRegister: SubmitHandler<RegisterFormInputs> = async (values) => {
     
-    const response = await apiRegister(values.name, values.email, values.password, values.phone, values.address);
+    const response = await apiRegisterForCustomer(values.name, values.email, values.password, values.phone, values.address);
     if (response.data?.data?.id) {
       toast.success(
         <CustomToast
-          message="Register successfully!"
+          message="Đăng ký thành công!"
           className="text-green-600"
         />
       );
@@ -34,7 +34,7 @@ const RegisterPage = () => {
     } else {
       toast.error(
         <CustomToast
-          message={response.statusText ?? "Exception Occurred..."}
+          message={response.statusText ?? "Đã xảy ra lỗi!"}
           className="text-red-600"
         />
       );

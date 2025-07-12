@@ -54,13 +54,13 @@ instance.interceptors.response.use((response) => response,
         }
         // chưa hoàn thiện
         if (error.config && error.response && +error.response.status === 400 && error.config.url === '/refresh') {
-            const message = error?.response?.data?.error ?? "Exception occured! Please login again.";
+            const message = error?.response?.data?.error ?? "Đã xảy ra lỗi! Vui lòng đăng nhập lại.";
             // No call store directly to avoid circular dependency
             const store = useStore();
             store.dispatch(setRefreshTokenAction({ status: true, message: message }));
         }
         if (+error.response.status === 403) {
-            toast.error(`${error?.response?.data?.message ?? "Forbidden"}`, {
+            toast.error(`${error?.response?.data?.message ?? "Bạn không có quyền truy cập!"}`, {
                 position: "top-right",
                 autoClose: 2000,
                 hideProgressBar: false,

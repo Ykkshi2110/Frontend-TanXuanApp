@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import CustomToast from "../../components/common/toast.message";
-import { apiLogin } from "../../config/api";
+import { apiLoginForCustomer } from "../../config/api";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setUserLoginInfo } from "../../redux/slice/account.slice";
 
@@ -24,17 +24,17 @@ const LoginPage = () => {
 
   const handleLogin = async (values: any) => {
     const { username, password } = values;
-    const response = await apiLogin(username, password);
+    const response = await apiLoginForCustomer(username, password);
     if (response.data?.data) {
       localStorage.setItem("access_token", response?.data.data?.access_token);
       dispacth(setUserLoginInfo(response?.data.data?.user));
       toast.success(
-        <CustomToast message="Login successfully!" className="text-green-600" />
+        <CustomToast message="Đăng nhập thành công!" className="text-green-600" />
       );
       navigate("/");
     } else {
       toast.error(
-        <CustomToast message="Login failed!" className="text-red-600" />
+        <CustomToast message="Đăng nhập thất bại!" className="text-red-600" />
       );
     }
   };

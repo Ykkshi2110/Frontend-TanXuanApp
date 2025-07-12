@@ -10,6 +10,7 @@ import PermissionModalDelete from "../../components/admin/permissions/permission
 import PermissionTable from "../../components/admin/permissions/permission.table";
 import { apiFetchAllPermission, apiSearchPermission } from "../../config/api";
 import { IPermission, IPermissionFilter } from "../../types/backend";
+import Access from "../auth/route/access";
 
 const PermissionPage = () => {
   const MAX_PERMISSIONS_PAGE = 5;
@@ -111,26 +112,28 @@ const PermissionPage = () => {
     setSelectedPermission(permission);
   };
 
-    if (error || searchError) {
-      return (
-        <div>
-          <p>Something went wrong!</p>
-        </div>
-      );
-    }
+  if (error || searchError) {
+    return (
+      <div>
+        <p>Something went wrong!</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4 relative">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <h1 className="text-lg font-semibold">Quản lý quyền hạn</h1>
-        <button
-          type="button"
-          className="py-2.5 px-2.5 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-800 text-white hover:bg-green-900 focus:outline-hidden focus:bg-green-900 disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap"
-          onClick={handleOpenCreateModal}
-        >
-          <Plus className="w-4 h-4 text-white mr-2" />
-          Thêm quyền hạn
-        </button>
+        <Access permission={{ name: "Create a permission" }} hideChildren>
+          <button
+            type="button"
+            className="py-2.5 px-2.5 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-800 text-white hover:bg-green-900 focus:outline-hidden focus:bg-green-900 disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap"
+            onClick={handleOpenCreateModal}
+          >
+            <Plus className="w-4 h-4 text-white mr-2" />
+            Thêm quyền hạn
+          </button>
+        </Access>
       </div>
 
       {isPending ? (
@@ -150,8 +153,14 @@ const PermissionPage = () => {
           <div className="flex justify-center">
             <Pagination
               currentPage={isSearching ? searchCurrentPage : currentPage}
-              setCurrentPage={isSearching ? setSearchCurrentPage : setCurrentPage}
-              total={isSearching ? totalSearchPage : permissions?.data.data?.meta.pages ?? 0}
+              setCurrentPage={
+                isSearching ? setSearchCurrentPage : setCurrentPage
+              }
+              total={
+                isSearching
+                  ? totalSearchPage
+                  : permissions?.data.data?.meta.pages ?? 0
+              }
             />
           </div>
         </>

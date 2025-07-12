@@ -5,7 +5,7 @@ import NotPermitted from "./not-permitted";
 const RoleBase = (props: any) => {
   const userRole = useAppSelector((state) => state.account.user.role);
   const roleName = userRole?.name;
-  return <>{roleName !== "User" ? props.children : <NotPermitted />}</>;
+  return <>{roleName !== "Customer" ? props.children : <NotPermitted />}</>;
 };
 
 const ProtectedRoute = (props: any) => {

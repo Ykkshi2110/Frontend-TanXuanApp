@@ -14,6 +14,7 @@ import {
   apiSearchUser,
 } from "../../config/api";
 import { IUser, IUserFilter } from "../../types/backend";
+import Access from "../auth/route/access";
 
 const UserPage = () => {
   const MAX_USERS_PAGE = 5;
@@ -133,14 +134,16 @@ const UserPage = () => {
     <div className="container mx-auto p-4 relative">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <h1 className="text-lg font-semibold">Quản lý người dùng</h1>
-        <button
-          type="button"
-          className="py-2.5 px-2.5 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-800 text-white hover:bg-green-900 focus:outline-hidden focus:bg-green-900 disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap"
-          onClick={handleOpenCreateModal}
-        >
-          <Plus className="w-4 h-4 text-white mr-2" />
-          Thêm người dùng
-        </button>
+        <Access permission={{ name: "Create a user" }} hideChildren>
+          <button
+            type="button"
+            className="py-2.5 px-2.5 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-800 text-white hover:bg-green-900 focus:outline-hidden focus:bg-green-900 disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap"
+            onClick={handleOpenCreateModal}
+          >
+            <Plus className="w-4 h-4 text-white mr-2" />
+            Thêm người dùng
+          </button>
+        </Access>
       </div>
 
       {isPending ? (

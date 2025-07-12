@@ -10,6 +10,7 @@ import { IRole, IRoleFilter } from "../../types/backend";
 import RoleModal from "../../components/admin/roles/role.modal";
 import RoleModalDelete from "../../components/admin/roles/role.modal.delete";
 import { useDebounce } from "use-debounce";
+import Access from "../auth/route/access";
 
 const RolePage = () => {
   const MAX_ROLES_PAGE = 5;
@@ -50,13 +51,10 @@ const RolePage = () => {
   const { data: searchData, error: searchError } = useQuery({
     queryKey: ["searchRoles", debouncedFilters, searchCurrentPage],
     queryFn: () =>
-      apiSearchRole(
-        `page=${searchCurrentPage}&size=${MAX_ROLES_PAGE}`,
-        {
-          name: debouncedFilters.name,
-          createdAt: debouncedFilters.createdAt,
-        }
-      ),
+      apiSearchRole(`page=${searchCurrentPage}&size=${MAX_ROLES_PAGE}`, {
+        name: debouncedFilters.name,
+        createdAt: debouncedFilters.createdAt,
+      }),
     enabled: Object.values(debouncedFilters).some(
       (value) => value !== "" || value !== null
     ),
@@ -119,14 +117,16 @@ const RolePage = () => {
     <div className="container mx-auto p-4 relative">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <h1 className="text-lg font-semibold">Quản lý vai trò</h1>
-        <button
-          type="button"
-          className="py-2.5 px-2.5 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-800 text-white hover:bg-green-900 focus:outline-hidden focus:bg-green-900 disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap"
-          onClick={handleOpenCreateModal}
-        >
-          <Plus className="w-4 h-4 text-white mr-2" />
-          Thêm vai trò
-        </button>
+        <Access permission={{ name: "Create a role" }} hideChildren>
+          <button
+            type="button"
+            className="py-2.5 px-2.5 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-800 text-white hover:bg-green-900 focus:outline-hidden focus:bg-green-900 disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap"
+            onClick={handleOpenCreateModal}
+          >
+            <Plus className="w-4 h-4 text-white mr-2" />
+            Thêm vai trò
+          </button>
+        </Access>
       </div>
 
       {isPending ? (

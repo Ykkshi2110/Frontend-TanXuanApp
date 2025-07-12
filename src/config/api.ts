@@ -2,12 +2,20 @@ import axiosClient from "./axios-customize"
 import { GetAccount, IAccount, IBackendResponse, ICategory, ICategoryFilter, IModelPagination, IPermission, IPermissionFilter, IProduct, IProductFilter, IRole, IRoleFilter, ISupplier, ISupplierFilter, IUser, IUserFilter } from "../types/backend"
 
 /* Module Auth */
-export const apiLogin = (username: string, password: string) => {
+export const apiLoginForCustomer = (username: string, password: string) => {
     return axiosClient.post<IBackendResponse<IAccount>>('/login', {username, password})
 }
 
-export const apiRegister = (name: string, email: string, password: string, phone: string, address: string ) => {
+export const apiLoginForInternalUser = (username: string, password: string) => {
+    return axiosClient.post<IBackendResponse<IAccount>>('/admin/login', {username, password})
+}
+
+export const apiRegisterForCustomer = (name: string, email: string, password: string, phone: string, address: string ) => {
     return axiosClient.post<IBackendResponse<IUser>>('/register', {name, email, password, phone, address})
+}
+
+export const apiRegisterForInternalUser = (name: string, email: string, password: string, phone: string, address: string ) => {
+    return axiosClient.post<IBackendResponse<IUser>>('/admin/register', {name, email, password, phone, address})
 }
 
 export const apiGetAccount = () => {
