@@ -15,6 +15,7 @@ interface IProps {
   dataInit?: IPermission | null;
   setDataInit?: React.Dispatch<React.SetStateAction<IPermission | null>>;
   onClose: () => void;
+  reloadTable: () => void;
 }
 
 // https://www.thepolyglotdeveloper.com/2015/05/use-regex-to-test-password-strength-in-javascript/ (regex password)
@@ -29,7 +30,7 @@ const createPermissionSchema = yup.object({
 type FormValues = yup.InferType<typeof createPermissionSchema>;
 
 const PermissionModal = (props: IProps) => {
-  const { isOpenActionModal, dataInit, onClose } = props;
+  const { isOpenActionModal, dataInit, onClose, reloadTable } = props;
 
   const {
     register,
@@ -58,17 +59,19 @@ const PermissionModal = (props: IProps) => {
   }, [dataInit, reset]);
 
   const handleSubmitPermission = handleSubmit(async (valuesForm: FormValues) => {
-    if (dataInit?.id) {
       const transformedValues = {
         id: dataInit?.id,
         ...valuesForm,
       };
 
-      const res = await apiUpdatePermission(transformedValues);
+      const res = dataInit?.id
+        ? await apiUpdatePermission(transformedValues)
+        : await apiCreatePermission(valuesForm);
       if (res?.data?.data) {
+        reloadTable();
         toast.success(
           <CustomToast
-            message="Cập nhật quyền hạn thành công!"
+            message={`${dataInit ? "Cập nhật" : "Thêm"} quyền hạn thành công!`}
             className="text-green-600"
           />
         );
@@ -77,31 +80,11 @@ const PermissionModal = (props: IProps) => {
       } else {
         toast.error(
           <CustomToast
-            message="Cập nhật quyền hạn thất bại!"
+            message={`${dataInit ? "Cập nhật" : "Thêm"} quyền hạn thất bại!`}
             className="text-red-600"
           />
         );
       }
-    } else {
-      const res = await apiCreatePermission(valuesForm);
-      if (res?.data?.data) {
-        toast.success(
-          <CustomToast
-            message="Thêm quyền hạn thành công!"
-            className="text-green-600"
-          />
-        );
-        onClose();
-        reset();
-      } else {
-        toast.error(
-          <CustomToast
-            message="Thêm quyền hạn thất bại!"
-            className="text-red-600"
-          />
-        );
-      }
-    }
   });
 
   return (

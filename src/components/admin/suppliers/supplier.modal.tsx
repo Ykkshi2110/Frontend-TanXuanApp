@@ -3,10 +3,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import {
-    apiCreateSupplier,
-    apiUpdateSupplier
-} from "../../../config/api";
+import { apiCreateSupplier, apiUpdateSupplier } from "../../../config/api";
 import { ISupplier } from "../../../types/backend";
 import CustomToast from "../../common/toast.message";
 
@@ -15,6 +12,7 @@ interface IProps {
   dataInit?: ISupplier | null;
   setDataInit?: React.Dispatch<React.SetStateAction<ISupplier | null>>;
   onClose: () => void;
+  reloadTable: () => void;
 }
 
 // https://www.thepolyglotdeveloper.com/2015/05/use-regex-to-test-password-strength-in-javascript/ (regex password)
@@ -28,7 +26,7 @@ const createSupplierSchema = yup.object({
 type FormValues = yup.InferType<typeof createSupplierSchema>;
 
 const SupplierModal = (props: IProps) => {
-  const { isOpenActionModal, dataInit, onClose } = props;
+  const { isOpenActionModal, dataInit, onClose, reloadTable } = props;
 
   const {
     register,
@@ -55,49 +53,31 @@ const SupplierModal = (props: IProps) => {
   }, [dataInit, reset]);
 
   const handleSubmitSupplier = handleSubmit(async (valuesForm: FormValues) => {
-    if (dataInit?.id) {
-      const transformedValues = {
-        id: dataInit?.id,
-        ...valuesForm,
-      };
+    const transformedValues = {
+      id: dataInit?.id,
+      ...valuesForm,
+    };
 
-      const res = await apiUpdateSupplier(transformedValues);
-      if (res?.data?.data) {
-        toast.success(
-          <CustomToast
-            message="Cập nhật nhà cung cấp thành công!"
-            className="text-green-600"
-          />
-        );
-        onClose();
-        reset();
-      } else {
-        toast.error(
-          <CustomToast
-            message="Cập nhật nhà cung cấp thất bại!"
-            className="text-red-600"
-          />
-        );
-      }
+    const res = dataInit?.id
+      ? await apiUpdateSupplier(transformedValues)
+      : await apiCreateSupplier(valuesForm);
+    if (res?.data?.data) {
+      reloadTable();
+      toast.success(
+        <CustomToast
+          message={`${dataInit ? "Cập nhật" : "Thêm"} nhà cung cấp thành công!`}
+          className="text-green-600"
+        />
+      );
+      onClose();
+      reset();
     } else {
-      const res = await apiCreateSupplier(valuesForm);
-      if (res?.data?.data) {
-        toast.success(
-          <CustomToast
-            message="Thêm nhà cung cấp thành công!"
-            className="text-green-600"
-          />
-        );
-        onClose();
-        reset();
-      } else {
-        toast.error(
-          <CustomToast
-            message="Thêm nhà cung cấp thất bại!"
-            className="text-red-600"
-          />
-        );
-      }
+      toast.error(
+        <CustomToast
+          message={`${dataInit ? "Cập nhật" : "Thêm"} nhà cung cấp thất bại!`}
+          className="text-red-600"
+        />
+      );
     }
   });
 
@@ -197,8 +177,8 @@ const SupplierModal = (props: IProps) => {
                 </div>
 
                 {/* Active */}
-               <div className="flex justify-between items-center gap-x-2">
-                <label
+                <div className="flex justify-between items-center gap-x-2">
+                  <label
                     className="block text-sm font-medium text-gray-700 mb-2"
                     htmlFor="active"
                   >

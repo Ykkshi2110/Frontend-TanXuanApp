@@ -6,12 +6,14 @@ import Pagination from "../../components/common/pagination";
 
 import { Plus } from "lucide-react";
 import ProductModal from "../../components/admin/products/product.modal";
-import ProductModalDelete from "../../components/admin/products/product.modal.delete";
 import ProductTable from "../../components/admin/products/product.table";
-import { apiFetchAllProduct, apiSearchProduct } from "../../config/api";
+import { apiDeleteProduct, apiFetchAllProduct, apiSearchProduct } from "../../config/api";
 import { IProduct, IProductFilter } from "../../types/backend";
 import ProductModalDetail from "../../components/admin/products/product.modal.detail";
 import Access from "../auth/route/access";
+import ModalDelete from "../../components/common/modal.delete";
+import { toast } from "react-toastify";
+import CustomToast from "../../components/common/toast.message";
 
 const ProductPage = () => {
   const MAX_PRODUCTS_PAGE = 5;
@@ -110,7 +112,7 @@ const ProductPage = () => {
 
   const queryClient = useQueryClient();
   const reloadTable = () => {
-    queryClient.invalidateQueries({ queryKey: ["fetchAllProducts"] });
+    queryClient.invalidateQueries({ queryKey: [["fetchAllProducts"]] });
   };
 
   const handleOpenCreateModal = () => {
@@ -131,6 +133,18 @@ const ProductPage = () => {
   const handleOpenViewModal = (product: IProduct) => {
     setIsOpenViewModal(true);
     setSelectedProduct(product);
+  };
+
+  const handleDeleteProduct = async () => {
+    const res = await apiDeleteProduct(selectedProduct?.id ?? "");
+    if (res?.data?.statusCode === 200) {
+      reloadTable();
+      toast.success(<CustomToast message="Xóa sản phẩm thành công!" className="text-green-600" />);
+    } else {
+      toast.error(<CustomToast message="Xóa sản phẩm thất bại!" className="text-red-600" />);
+    }
+    setSelectedProduct(null);
+    setIsOpenDeleteModal(false);
   };
 
   if (error || searchError) {
@@ -196,16 +210,6 @@ const ProductPage = () => {
           setSelectedProduct(null);
           setIsOpenActionModal(false);
         }}
-      />
-
-      <ProductModalDelete
-        isOpenDeleteModal={isOpenDeleteModal}
-        dataInit={selectedProduct}
-        setDataInit={setSelectedProduct}
-        onClose={() => {
-          setSelectedProduct(null);
-          setIsOpenDeleteModal(false);
-        }}
         reloadTable={reloadTable}
       />
 
@@ -217,6 +221,17 @@ const ProductPage = () => {
           setSelectedProduct(null);
           setIsOpenViewModal(false);
         }}
+      />
+
+      <ModalDelete
+        isOpenDeleteModal={isOpenDeleteModal}
+        onDelete={handleDeleteProduct}
+        onClose={() => {
+          setSelectedProduct(null);
+          setIsOpenDeleteModal(false);
+        }}
+        title={`sản phẩm: ${selectedProduct?.name}`}
+        modalName={`Sản phẩm`}
       />
     </div>
   );

@@ -7,14 +7,17 @@ import LoadingSpinner from "../../components/common/loading.spinner";
 import Pagination from "../../components/common/pagination";
 
 import { Plus } from "lucide-react";
-import UserModalDelete from "../../components/admin/users/user.modal.delete";
 import {
+  apiDeleteUser,
   apiFetchAllRole,
   apiFetchAllUser,
   apiSearchUser,
 } from "../../config/api";
 import { IUser, IUserFilter } from "../../types/backend";
+import CustomToast from "../../components/common/toast.message";
 import Access from "../auth/route/access";
+import { toast } from "react-toastify";
+import ModalDelete from "../../components/common/modal.delete";
 
 const UserPage = () => {
   const MAX_USERS_PAGE = 5;
@@ -102,10 +105,7 @@ const UserPage = () => {
     setIsSearching(!!value);
   };
 
-  const queryClient = useQueryClient();
-  const reloadTable = () => {
-    queryClient.invalidateQueries({ queryKey: ["fetchAllUsers"] });
-  };
+  
 
   const handleOpenCreateModal = () => {
     setIsOpenActionModal(true);
@@ -120,6 +120,23 @@ const UserPage = () => {
   const handleOpenDeleteModal = (user: IUser) => {
     setIsOpenDeleteModal(true);
     setSelectedUser(user);
+  };
+  
+  const queryClient = useQueryClient();
+  const reloadTable = () => {
+    queryClient.invalidateQueries({ queryKey: [["fetchAllUsers"]] });
+  };
+
+  const handleDeleteUser = async () => {
+    const res = await apiDeleteUser(selectedUser?.id ?? "");
+    if (res?.data?.statusCode === 200) {
+      reloadTable();
+      toast.success(<CustomToast message="Xóa người dùng thành công!" className="text-green-600" />);
+    } else {
+      toast.error(<CustomToast message="Xóa người dùng thất bại!" className="text-red-600" />);
+    }
+    setSelectedUser(null);
+    setIsOpenDeleteModal(false);
   };
 
   if (error || searchError) {
@@ -184,17 +201,18 @@ const UserPage = () => {
           setSelectedUser(null);
           setIsOpenActionModal(false);
         }}
+        reloadTable={reloadTable}
       />
 
-      <UserModalDelete
-        isOpenEditModal={isOpenDeleteModal}
-        dataInit={selectedUser}
-        setDataInit={setSelectedUser}
+      <ModalDelete
+        isOpenDeleteModal={isOpenDeleteModal}
+        onDelete={handleDeleteUser}
         onClose={() => {
           setSelectedUser(null);
           setIsOpenDeleteModal(false);
         }}
-        reloadTable={reloadTable}
+        title={`người dùng: ${selectedUser?.name}`}
+        modalName={`Người dùng`}
       />
     </div>
   );

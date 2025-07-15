@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import {
   apiCreateProduct,
@@ -20,10 +20,11 @@ interface IProps {
   dataInit?: IProduct | null;
   setDataInit?: React.Dispatch<React.SetStateAction<IProduct | null>>;
   onClose: () => void;
+  reloadTable: () => void;
 }
 
 const ProductModal = (props: IProps) => {
-  const { isOpenActionModal, dataInit, onClose } = props;
+  const { isOpenActionModal, dataInit, onClose, reloadTable } = props;
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const createProductSchema = yup.object({
@@ -102,8 +103,6 @@ const ProductModal = (props: IProps) => {
     }
   };
 
-  const queryClient = useQueryClient();
-
   const mutation = useMutation({
     mutationFn: async (valuesForm: FormValues) => {
       try {
@@ -136,7 +135,7 @@ const ProductModal = (props: IProps) => {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [["fetchAllProducts"]] });
+      reloadTable();
       toast.success(
         <CustomToast
           message={`${dataInit ? "Cập nhật" : "Thêm"} sản phẩm thành công!`}

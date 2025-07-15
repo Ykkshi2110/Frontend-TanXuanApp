@@ -6,11 +6,13 @@ import Pagination from "../../components/common/pagination";
 import { Plus } from "lucide-react";
 import { useDebounce } from "use-debounce";
 import PermissionModal from "../../components/admin/permissions/permission.modal";
-import PermissionModalDelete from "../../components/admin/permissions/permission.modal.delete";
 import PermissionTable from "../../components/admin/permissions/permission.table";
-import { apiFetchAllPermission, apiSearchPermission } from "../../config/api";
+import { apiDeletePermission, apiFetchAllPermission, apiSearchPermission } from "../../config/api";
 import { IPermission, IPermissionFilter } from "../../types/backend";
 import Access from "../auth/route/access";
+import CustomToast from "../../components/common/toast.message";
+import { toast } from "react-toastify";
+import ModalDelete from "../../components/common/modal.delete";
 
 const PermissionPage = () => {
   const MAX_PERMISSIONS_PAGE = 5;
@@ -94,7 +96,7 @@ const PermissionPage = () => {
 
   const queryClient = useQueryClient();
   const reloadTable = () => {
-    queryClient.invalidateQueries({ queryKey: ["fetchAllPermissions"] });
+    queryClient.invalidateQueries({ queryKey: [["fetchAllPermissions"]] });
   };
 
   const handleOpenCreateModal = () => {
@@ -110,6 +112,18 @@ const PermissionPage = () => {
   const handleOpenDeleteModal = (permission: IPermission) => {
     setIsOpenDeleteModal(true);
     setSelectedPermission(permission);
+  };
+
+  const handleDeletePermission = async () => {
+    const res = await apiDeletePermission(selectedPermission?.id ?? "");
+    if (res?.data?.statusCode === 200) {
+      reloadTable();
+      toast.success(<CustomToast message="Xóa quyền hạn thành công!" className="text-green-600" />);
+    } else {
+      toast.error(<CustomToast message="Xóa quyền hạn thất bại!" className="text-red-600" />);
+    }
+    setSelectedPermission(null);
+    setIsOpenDeleteModal(false);
   };
 
   if (error || searchError) {
@@ -174,17 +188,18 @@ const PermissionPage = () => {
           setSelectedPermission(null);
           setIsOpenActionModal(false);
         }}
+        reloadTable={reloadTable}
       />
 
-      <PermissionModalDelete
+      <ModalDelete
         isOpenDeleteModal={isOpenDeleteModal}
-        dataInit={selectedPermission}
-        setDataInit={setSelectedPermission}
+        onDelete={handleDeletePermission}
         onClose={() => {
           setSelectedPermission(null);
           setIsOpenDeleteModal(false);
         }}
-        reloadTable={reloadTable}
+        title={`quyền hạn: ${selectedPermission?.name}`}
+        modalName={`Quyền hạn`}
       />
     </div>
   );

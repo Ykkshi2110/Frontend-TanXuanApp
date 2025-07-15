@@ -23,6 +23,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import CategoryPage from "./pages/admin/category";
 import PermissionPage from "./pages/admin/permissions";
 import RolePage from "./pages/admin/roles";
+import LoginInternalUserPage from "./pages/auth/login.internal.user";
 
 declare global {
   interface Window {
@@ -106,6 +107,10 @@ export const routes = [
     path: "/register",
     element: <RegisterPage />,
   },
+  {
+    path: "/admin/login",
+    element: <LoginInternalUserPage />,
+  },
 ];
 
 function App() {
@@ -118,7 +123,8 @@ function App() {
   useEffect(() => {
     if (
       window.location.pathname === "/login" ||
-      window.location.pathname === "/register"
+      window.location.pathname === "/register" ||
+      window.location.pathname === "/admin/login"
     )
       return;
     dispatch(fetchUserInfo());

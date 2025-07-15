@@ -5,12 +5,14 @@ import Pagination from "../../components/common/pagination";
 
 import { Plus } from "lucide-react";
 import CategoryTable from "../../components/admin/categories/category.table";
-import { apiFetchAllCategory, apiSearchCategory } from "../../config/api";
+import { apiDeleteCategory, apiFetchAllCategory, apiSearchCategory } from "../../config/api";
 import { ICategory, ICategoryFilter } from "../../types/backend";
 import CategoryModal from "../../components/admin/categories/category.modal";
-import CategoryModalDelete from "../../components/admin/categories/category.modal.delete";
 import { useDebounce } from "use-debounce";
 import Access from "../auth/route/access";
+import ModalDelete from "../../components/common/modal.delete";
+import CustomToast from "../../components/common/toast.message";
+import { toast } from "react-toastify";
 
 const CategoryPage = () => {
   const MAX_CATEGORIES_PAGE = 5;
@@ -89,7 +91,7 @@ const CategoryPage = () => {
 
   const queryClient = useQueryClient();
   const reloadTable = () => {
-    queryClient.invalidateQueries({ queryKey: ["fetchAllCategories"] });
+    queryClient.invalidateQueries({ queryKey: [["fetchAllCategories"]] });
   };
 
   const handleOpenCreateModal = () => {
@@ -105,6 +107,18 @@ const CategoryPage = () => {
   const handleOpenDeleteModal = (category: ICategory) => {
     setIsOpenDeleteModal(true);
     setSelectedCategory(category);
+  };
+
+  const handleDeleteCategory = async () => {
+    const res = await apiDeleteCategory(selectedCategory?.id ?? "");
+    if (res?.data?.statusCode === 200) {
+      reloadTable();
+      toast.success(<CustomToast message="Xóa danh mục thành công!" className="text-green-600" />);
+    } else {
+      toast.error(<CustomToast message="Xóa danh mục thất bại!" className="text-red-600" />);
+    }
+    setSelectedCategory(null);
+    setIsOpenDeleteModal(false);
   };
 
   if (error || searchError) {
@@ -169,17 +183,18 @@ const CategoryPage = () => {
           setSelectedCategory(null);
           setIsOpenActionModal(false);
         }}
+        reloadTable={reloadTable}
       />
 
-      <CategoryModalDelete
+      <ModalDelete
         isOpenDeleteModal={isOpenDeleteModal}
-        dataInit={selectedCategory}
-        setDataInit={setSelectedCategory}
+        onDelete={handleDeleteCategory}
         onClose={() => {
           setSelectedCategory(null);
           setIsOpenDeleteModal(false);
         }}
-        reloadTable={reloadTable}
+        title={`danh mục: ${selectedCategory?.name}`}
+        modalName={`Danh mục`}
       />
     </div>
   );

@@ -5,12 +5,14 @@ import Pagination from "../../components/common/pagination";
 
 import { Plus } from "lucide-react";
 import SupplierTable from "../../components/admin/suppliers/supplier.table";
-import { apiFetchAllSupplier, apiSearchSupplier } from "../../config/api";
+import { apiDeleteSupplier, apiFetchAllSupplier, apiSearchSupplier } from "../../config/api";
 import { ISupplier, ISupplierFilter } from "../../types/backend";
 import { useDebounce } from "use-debounce";
 import SupplierModal from "../../components/admin/suppliers/supplier.modal";
-import SupplierModalDelete from "../../components/admin/suppliers/supplier.modal.delete";
 import Access from "../auth/route/access";
+import ModalDelete from "../../components/common/modal.delete";
+import CustomToast from "../../components/common/toast.message";
+import { toast } from "react-toastify";
 
 const SupplierPage = () => {
   const MAX_SUPPLIERS_PAGE = 5;
@@ -91,7 +93,7 @@ const SupplierPage = () => {
 
   const queryClient = useQueryClient();
   const reloadTable = () => {
-    queryClient.invalidateQueries({ queryKey: ["fetchAllSuppliers"] });
+    queryClient.invalidateQueries({ queryKey: [["fetchAllSuppliers"]] });
   };
 
   const handleOpenCreateModal = () => {
@@ -107,6 +109,18 @@ const SupplierPage = () => {
   const handleOpenDeleteModal = (supplier: ISupplier) => {
     setIsOpenDeleteModal(true);
     setSelectedSupplier(supplier);
+  };
+
+  const handleDeleteSupplier = async () => {
+    const res = await apiDeleteSupplier(selectedSupplier?.id ?? "");
+    if (res?.data?.statusCode === 200) {
+      reloadTable();
+      toast.success(<CustomToast message="Xóa nhà cung cấp thành công!" className="text-green-600" />);
+    } else {
+      toast.error(<CustomToast message="Xóa nhà cung cấp thất bại!" className="text-red-600" />);
+    }
+    setSelectedSupplier(null);
+    setIsOpenDeleteModal(false);
   };
 
   if (error || searchError) {
@@ -171,17 +185,18 @@ const SupplierPage = () => {
           setSelectedSupplier(null);
           setIsOpenActionModal(false);
         }}
+        reloadTable={reloadTable}
       />
 
-      <SupplierModalDelete
+      <ModalDelete
         isOpenDeleteModal={isOpenDeleteModal}
-        dataInit={selectedSupplier}
-        setDataInit={setSelectedSupplier}
+        onDelete={handleDeleteSupplier}
         onClose={() => {
           setSelectedSupplier(null);
           setIsOpenDeleteModal(false);
         }}
-        reloadTable={reloadTable}
+        title={`nhà cung cấp: ${selectedSupplier?.name}`}
+        modalName={`Nhà cung cấp`}
       />
     </div>
   );

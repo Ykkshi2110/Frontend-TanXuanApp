@@ -18,6 +18,7 @@ interface IProps {
   dataInit?: IRole | null;
   setDataInit?: React.Dispatch<React.SetStateAction<IRole | null>>;
   onClose: () => void;
+  reloadTable: () => void;
 }
 
 // https://www.thepolyglotdeveloper.com/2015/05/use-regex-to-test-password-strength-in-javascript/ (regex password)
@@ -33,7 +34,7 @@ const createRoleSchema = yup.object({
 type FormValues = yup.InferType<typeof createRoleSchema>;
 
 const RoleModal = (props: IProps) => {
-  const { isOpenActionModal, dataInit, onClose } = props;
+  const { isOpenActionModal, dataInit, onClose, reloadTable } = props;
 
   const [checkedPermission, setCheckedPermission] = useState<{ id: string }[]>([]);
 
@@ -70,11 +71,6 @@ const RoleModal = (props: IProps) => {
         ...permissionsInModule.map((permission) => ({ id: permission.id as string })),
       ]);
     }
-
-    setIsAccordionOpen((prev) => ({
-      ...prev,
-      [module]: !prev[module],
-    }));
   };
 
   const { permissions } = usePermission();
@@ -92,6 +88,7 @@ const RoleModal = (props: IProps) => {
       setIsAccordionOpen(
         Object.fromEntries(modules.map((module) => [module.module, false]))
       );
+      setCheckedPermission([]);
     }
     if(dataInit && isOpenActionModal){
       setIsAccordionOpen(
@@ -137,18 +134,20 @@ const RoleModal = (props: IProps) => {
   }, [dataInit, reset]);
 
   const handleSubmitRole = handleSubmit(async (valuesForm: FormValues) => {
-    if (dataInit?.id) {
+
       const transformedUpdateValues = {
         id: dataInit?.id,
         ...valuesForm,
-        permissions: checkedPermission,
+        permissions: checkedPermission
       };
 
-      const res = await apiUpdateRole(transformedUpdateValues);
+      // Note: các permissions là trường được thêm vào nằm ngoài FormValues
+      const res = dataInit ? await apiUpdateRole(transformedUpdateValues) : await apiCreateRole(transformedUpdateValues);
       if (res?.data?.data) {
+        reloadTable();
         toast.success(
           <CustomToast
-            message="Cập nhật vai trò thành công!"
+            message={`${dataInit ? "Cập nhật" : "Thêm"} vai trò thành công!`}
             className="text-green-600"
           />
         );
@@ -157,35 +156,11 @@ const RoleModal = (props: IProps) => {
       } else {
         toast.error(
           <CustomToast
-            message="Cập nhật vai trò thất bại!"
+            message={`${dataInit ? "Cập nhật" : "Thêm"} vai trò thất bại!`}
             className="text-red-600"
           />
         );
       }
-    } else {
-      const transformedCreateValues = {
-        ...valuesForm,
-        permissions: checkedPermission,
-      };
-      const res = await apiCreateRole(transformedCreateValues);
-      if (res?.data?.data) {
-        toast.success(
-          <CustomToast
-            message="Thêm vai trò thành công!"
-            className="text-green-600"
-          />
-        );
-        onClose();
-        reset();
-      } else {
-        toast.error(
-          <CustomToast
-            message="Thêm vai trò thất bại!"
-            className="text-red-600"
-          />
-        );
-      }
-    }
   });
 
   return (

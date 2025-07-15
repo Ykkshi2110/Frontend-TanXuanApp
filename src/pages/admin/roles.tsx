@@ -5,12 +5,14 @@ import Pagination from "../../components/common/pagination";
 
 import { Plus } from "lucide-react";
 import RoleTable from "../../components/admin/roles/role.table";
-import { apiFetchAllRole, apiSearchRole } from "../../config/api";
+import { apiDeleteRole, apiFetchAllRole, apiSearchRole } from "../../config/api";
 import { IRole, IRoleFilter } from "../../types/backend";
 import RoleModal from "../../components/admin/roles/role.modal";
-import RoleModalDelete from "../../components/admin/roles/role.modal.delete";
 import { useDebounce } from "use-debounce";
 import Access from "../auth/route/access";
+import ModalDelete from "../../components/common/modal.delete";
+import CustomToast from "../../components/common/toast.message";
+import { toast } from "react-toastify";
 
 const RolePage = () => {
   const MAX_ROLES_PAGE = 5;
@@ -87,7 +89,7 @@ const RolePage = () => {
 
   const queryClient = useQueryClient();
   const reloadTable = () => {
-    queryClient.invalidateQueries({ queryKey: ["fetchAllRoles"] });
+    queryClient.invalidateQueries({ queryKey: [["fetchAllRoles"]] });
   };
 
   const handleOpenCreateModal = () => {
@@ -103,6 +105,18 @@ const RolePage = () => {
   const handleOpenDeleteModal = (role: IRole) => {
     setIsOpenDeleteModal(true);
     setSelectedRole(role);
+  };
+
+  const handleDeleteRole = async () => {
+    const res = await apiDeleteRole(selectedRole?.id ?? "");
+    if (res?.data?.statusCode === 200) {
+      reloadTable();
+      toast.success(<CustomToast message="Xóa vai trò thành công!" className="text-green-600" />);
+    } else {
+      toast.error(<CustomToast message="Xóa vai trò thất bại!" className="text-red-600" />);
+    }
+    setSelectedRole(null);
+    setIsOpenDeleteModal(false);
   };
 
   if (error || searchError) {
@@ -167,17 +181,18 @@ const RolePage = () => {
           setSelectedRole(null);
           setIsOpenActionModal(false);
         }}
+        reloadTable={reloadTable}
       />
 
-      <RoleModalDelete
+      <ModalDelete
         isOpenDeleteModal={isOpenDeleteModal}
-        dataInit={selectedRole}
-        setDataInit={setSelectedRole}
+        onDelete={handleDeleteRole}
         onClose={() => {
           setSelectedRole(null);
           setIsOpenDeleteModal(false);
         }}
-        reloadTable={reloadTable}
+        title={`vai trò: ${selectedRole?.name}`}
+        modalName={`Vai trò`}
       />
     </div>
   );

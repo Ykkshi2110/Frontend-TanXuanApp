@@ -17,6 +17,7 @@ interface IProps {
   dataInit?: IUser | null;
   setDataInit?: React.Dispatch<React.SetStateAction<IUser | null>>;
   onClose: () => void;
+  reloadTable: () => void;
 }
 
 // https://www.thepolyglotdeveloper.com/2015/05/use-regex-to-test-password-strength-in-javascript/ (regex password)
@@ -60,7 +61,7 @@ const UserModal = (props: IProps) => {
     queryFn: () => apiFetchAllRole(`page=1&size=20`),
   });
 
-  const { isOpenActionModal, dataInit, onClose } = props;
+  const { isOpenActionModal, dataInit, onClose, reloadTable } = props;
 
   const {
     register,
@@ -96,7 +97,6 @@ const UserModal = (props: IProps) => {
   }, [dataInit, reset]);
 
   const handleSubmitUser = handleSubmit(async (valuesForm: FormValues) => {
-    if (dataInit?.id) {
       const transformedValues = {
         id: dataInit?.id,
         ...valuesForm,
@@ -107,11 +107,15 @@ const UserModal = (props: IProps) => {
         delete valuesForm.password;
       }
 
-      const res = await apiUpdateUser(transformedValues);
+      const res = dataInit?.id
+        ? await apiUpdateUser(transformedValues)
+        : await apiCreateUser(valuesForm);
+
       if (res?.data?.data) {
+        reloadTable();
         toast.success(
           <CustomToast
-            message="Cập nhật người dùng thành công!"
+            message={`${dataInit ? "Cập nhật" : "Thêm"} người dùng thành công!`}
             className="text-green-600"
           />
         );
@@ -120,31 +124,11 @@ const UserModal = (props: IProps) => {
       } else {
         toast.error(
           <CustomToast
-            message="Cập nhật người dùng thất bại!"
+            message={`${dataInit ? "Cập nhật" : "Thêm"} người dùng thất bại!`}
             className="text-red-600"
           />
         );
       }
-    } else {
-      const res = await apiCreateUser(valuesForm);
-      if (res?.data?.data) {
-        toast.success(
-          <CustomToast
-            message="Thêm người dùng thành công!"
-            className="text-green-600"
-          />
-        );
-        onClose();
-        reset();
-      } else {
-        toast.error(
-          <CustomToast
-            message="Thêm người dùng thất bại!"
-            className="text-red-600"
-          />
-        );
-      }
-    }
   });
 
   return (

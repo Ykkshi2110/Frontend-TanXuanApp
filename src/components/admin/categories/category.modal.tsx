@@ -15,6 +15,7 @@ interface IProps {
   dataInit?: ICategory | null;
   setDataInit?: React.Dispatch<React.SetStateAction<ICategory | null>>;
   onClose: () => void;
+  reloadTable: () => void;
 }
 
 // https://www.thepolyglotdeveloper.com/2015/05/use-regex-to-test-password-strength-in-javascript/ (regex password)
@@ -27,7 +28,7 @@ const createCategorySchema = yup.object({
 type FormValues = yup.InferType<typeof createCategorySchema>;
 
 const CategoryModal = (props: IProps) => {
-  const { isOpenActionModal, dataInit, onClose } = props;
+  const { isOpenActionModal, dataInit, onClose, reloadTable } = props;
 
   const {
     register,
@@ -52,17 +53,19 @@ const CategoryModal = (props: IProps) => {
   }, [dataInit, reset]);
 
   const handleSubmitCategory = handleSubmit(async (valuesForm: FormValues) => {
-    if (dataInit?.id) {
       const transformedValues = {
         id: dataInit?.id,
         ...valuesForm,
       };
 
-      const res = await apiUpdateCategory(transformedValues);
+      const res = dataInit?.id
+        ? await apiUpdateCategory(transformedValues)
+        : await apiCreateCategory(valuesForm);
       if (res?.data?.data) {
+        reloadTable();
         toast.success(
           <CustomToast
-            message="Cập nhật danh mục thành công!"
+            message={`${dataInit ? "Cập nhật" : "Thêm"} danh mục thành công!`}
             className="text-green-600"
           />
         );
@@ -71,30 +74,10 @@ const CategoryModal = (props: IProps) => {
       } else {
         toast.error(
           <CustomToast
-            message="Cập nhật danh mục thất bại!"
+            message={`${dataInit ? "Cập nhật" : "Thêm"} danh mục thất bại!`}
             className="text-red-600"
           />
-        );
-      }
-    } else {
-      const res = await apiCreateCategory(valuesForm);
-      if (res?.data?.data) {
-        toast.success(
-          <CustomToast
-            message="Thêm danh mục thành công!"
-            className="text-green-600"
-          />
-        );
-        onClose();
-        reset();
-      } else {
-        toast.error(
-          <CustomToast
-            message="Thêm danh mục thất bại!"
-            className="text-red-600"
-          />
-        );
-      }
+      );
     }
   });
 
