@@ -171,5 +171,33 @@ export interface IRoleFilter {
     createdAt?: string | null;
 }
 
+export interface ICustomer {
+    id?: string;
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    password?: string;
+    role?: {
+        id: string;
+        name?: string;
+        description?: string;
+    }
+    latitude?: number;
+    longitude?: number;
+    provinceId?: string;
+    districtId?: string;
+    wardId?: string;
+    createdAt?: string;
+    createdBy?: string;
+    updatedAt?: string;
+    updatedBy?: string;
+}
 
+export interface ICustomerFilter {
+    name?: string;
+    email?: string;
+    phone?: string;
+    createdAt?: string | null;
+}
 

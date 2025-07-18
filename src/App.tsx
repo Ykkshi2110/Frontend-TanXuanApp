@@ -24,6 +24,7 @@ import CategoryPage from "./pages/admin/category";
 import PermissionPage from "./pages/admin/permissions";
 import RolePage from "./pages/admin/roles";
 import LoginInternalUserPage from "./pages/auth/login.internal.user";
+import CustomerPage from "./pages/admin/customer";
 
 declare global {
   interface Window {
@@ -65,7 +66,12 @@ export const routes = [
       {
         path: "users",
         element: <UserPage />,
-        breadcrumb: "Người dùng",
+        breadcrumb: "Nhân viên",
+      },
+      {
+        path: "customers",
+        element: <CustomerPage />,
+        breadcrumb: "Khách hàng",
       },
       {
         path: "products",

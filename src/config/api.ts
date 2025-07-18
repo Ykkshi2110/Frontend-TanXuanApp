@@ -1,5 +1,5 @@
 import axiosClient from "./axios-customize"
-import { GetAccount, IAccount, IBackendResponse, ICategory, ICategoryFilter, IModelPagination, IPermission, IPermissionFilter, IProduct, IProductFilter, IRole, IRoleFilter, ISupplier, ISupplierFilter, IUser, IUserFilter } from "../types/backend"
+import { GetAccount, IAccount, IBackendResponse, ICategory, ICategoryFilter, ICustomer, ICustomerFilter, IModelPagination, IPermission, IPermissionFilter, IProduct, IProductFilter, IRole, IRoleFilter, ISupplier, ISupplierFilter, IUser, IUserFilter } from "../types/backend"
 
 /* Module Auth */
 export const apiLoginForCustomer = (username: string, password: string) => {
@@ -46,6 +46,27 @@ export const apiUpdateUser = ( user: IUser ) => {
 
 export const apiDeleteUser = ( id: string ) => {
     return axiosClient.delete<IBackendResponse<IUser>>(`/users/delete/${id}`)
+}
+
+/* Module Customer */
+export const apiFetchAllCustomer = ( query: string ) => {
+    return axiosClient.get<IBackendResponse<IModelPagination<ICustomer>>>(`/customers?${query}`)
+}
+
+export const apiFetchCustomerById = ( id: string ) => {
+    return axiosClient.get<IBackendResponse<ICustomer>>(`/customers/${id}`)
+}
+
+export const apiCreateCustomer = ( customer: ICustomer ) => {
+    return axiosClient.post<IBackendResponse<ICustomer>>(`/customers/create`, {...customer})
+}
+
+export const apiUpdateCustomer = ( customer: ICustomer ) => {
+    return axiosClient.post<IBackendResponse<ICustomer>>(`/customers/update`, {...customer})
+}
+
+export const apiDeleteCustomer = ( id: string ) => {
+    return axiosClient.delete<IBackendResponse<ICustomer>>(`/customers/delete/${id}`)
 }
 
 
@@ -111,6 +132,10 @@ export const apiSearchPermission = ( query: string, permissionFilter: IPermissio
 
 export const apiSearchRole = ( query: string, roleFilter: IRoleFilter ) => {
     return axiosClient.post<IBackendResponse<IModelPagination<IRole>>>(`/roles/filter?${query}`, {...roleFilter})
+}
+
+export const apiSearchCustomer = ( query: string, customerFilter: ICustomerFilter ) => {
+    return axiosClient.post<IBackendResponse<IModelPagination<ICustomer>>>(`/customers/filter?${query}`, {...customerFilter})
 }
 
 /* Module Category */
