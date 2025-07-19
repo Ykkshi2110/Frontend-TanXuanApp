@@ -21,7 +21,6 @@ const SideBar = () => {
           <NavLink
             className="flex-none rounded-xl text-xl inline-block font-semibold focus:outline-hidden focus:opacity-80"
             to={"/admin/dashboard"}
-            aria-label="Preline"
           >
             <img
               src="/images/Group.svg"
