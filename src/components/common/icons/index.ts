@@ -5,3 +5,6 @@ export { default as ArrowPath } from './arrow.path';
 export { default as Shield } from './shield';
 export { default as Search } from './search';
 export { default as HandThumbUp } from './hand.thumb.up';
+export { default as Facebook } from './social/facebook';
+export { default as Instagram } from './social/instagram';
+export { default as Youtube } from './social/youtube';

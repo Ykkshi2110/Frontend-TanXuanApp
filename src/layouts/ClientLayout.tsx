@@ -1,7 +1,9 @@
 import CategoryShowcase from "../components/client/categories.showcase";
 import FeaturesSection from "../components/client/features.section";
+import Footer from "../components/client/footer";
 import Header from "../components/client/header";
 import HeroBanner from "../components/client/hero.banner";
+import NewsletterSection from "../components/client/newsletter.section";
 import ProductSection from "../components/client/product.section";
 
 const ClientLayout = () => {
@@ -26,7 +28,9 @@ const ClientLayout = () => {
           title="Sản phẩm bán chạy"
           subtitle="Các sản phẩm được khách hàng mua nhiều nhất"
         />
+        <NewsletterSection />
       </main>
+      <Footer />
     </div>
   );
 };

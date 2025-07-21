@@ -1,6 +1,6 @@
 const HeroBanner = () => {
   return (
-    <div className="bg-gradient-to-r from-green-50 to-green-100">
+    <div className="bg-green-50">
       <div className="container mx-auto px-4 h-full grid grid-cols-1 md:grid-cols-2 md:py-20 py-12 gap-8 items-center">
         <div className="order-2 md:order-1">
           <h1 className="md:text-5xl text-3xl font-bold text-gray-800 mb-4">
