@@ -26,7 +26,7 @@ export interface IAccount {
     }
 }
 
-export interface GetAccount extends Omit<IAccount, 'access_token'> {}
+export interface GetAccount extends Omit<IAccount, 'access_token'> { }
 
 export interface IModelPagination<T> {
     meta: {
@@ -34,7 +34,7 @@ export interface IModelPagination<T> {
         pageSize: number;
         pages: number;
         total: number;
-    }, 
+    },
     result: T[]
 }
 

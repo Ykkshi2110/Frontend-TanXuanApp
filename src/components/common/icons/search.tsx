@@ -15,7 +15,7 @@ const SearchIcon: React.FC<SearchIconProps> = ({
 }) => {
   return (
     <svg
-      className={className}
+      className={`${className} shrink-0`}
       style={{ width: size, height: size }}
       xmlns="http://www.w3.org/2000/svg"
       width="24"

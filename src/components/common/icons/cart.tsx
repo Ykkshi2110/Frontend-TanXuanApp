@@ -20,7 +20,7 @@ const CartIcon: React.FC<CartIconProps> = ({
       viewBox="0 0 24 24"
       strokeWidth="2"
       stroke={color}
-      className={className}
+      className={`${className} shrink-0`}
       style={{ width: size, height: size }}
       onClick={onClick}
     >
