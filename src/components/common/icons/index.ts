@@ -8,3 +8,5 @@ export { default as HandThumbUp } from './hand.thumb.up';
 export { default as Facebook } from './social/facebook';
 export { default as Instagram } from './social/instagram';
 export { default as Youtube } from './social/youtube';
+export { default as Start } from './start';
+export { default as Users } from './users';

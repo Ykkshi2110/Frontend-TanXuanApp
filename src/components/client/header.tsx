@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom";
 import { useAppSelector } from "../../redux/hooks";
-import { Facebook, Youtube, Instagram } from "../common/icons";
 
 const Header = () => {
   const isAuthenticated = useAppSelector(
@@ -8,7 +7,8 @@ const Header = () => {
   );
 
   return (
-    <header className="sticky top-0 inset-x-0 flex flex-col z-30 w-full bg-white border-b border-gray-200 text-sm pt-2">
+    
+    <header className="sticky top-0 inset-x-0 z-30 flex flex-col bg-white border-b border-gray-200 text-sm pt-2 shadow-sm">
       <nav className="px-4 sm:px-6 flex basis-full items-center w-full mx-auto mb-2 py-2">
         <div className="w-full flex items-center justify-between">
           <div className="flex flex-row items-center gap-4">
@@ -120,62 +120,6 @@ const Header = () => {
               </div>
             )}
           </div>
-        </div>
-      </nav>
-    
-      <nav className="px-4 sm:px-6 flex w-full py-2 bg-green-200">
-        <div className="flex items-center justify-between w-full">
-        <div className="flex items-center gap-4">
-          <NavLink
-            className={({ isActive }) =>
-              "px-4 py-4 font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-green-100" +
-              (isActive
-                ? " text-green-800 bg-green-100 border-b-2 border-green-800 font-semibold"
-                : " text-gray-700 hover:bg-green-100 hover:border-b-2 hover:border-green-800 hover:font-semibold hover:text-green-800")
-            }
-            to="/"
-          >
-            Trang chủ
-          </NavLink>
-          <NavLink
-            className={({ isActive }) =>
-              "px-4 py-4 font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-green-100" +
-              (isActive
-                ? " text-green-800 bg-green-100 border-b-2 border-green-800 font-semibold"
-                : " text-gray-700 hover:bg-green-100 hover:border-b-2 hover:border-green-800 hover:font-semibold hover:text-green-800")
-            }
-            to="/products"
-          >
-            Sản phẩm
-          </NavLink>
-          <NavLink
-            className={({ isActive }) =>
-              "px-4 py-4 font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-green-100" +
-              (isActive
-                ? " text-green-800 bg-green-100 border-b-2 border-green-800 font-semibold"
-                : " text-gray-700 hover:bg-green-100 hover:border-b-2 hover:border-green-800 hover:font-semibold hover:text-green-800")
-            }
-            to="/contact"
-          >
-            Giới thiệu
-          </NavLink>
-          <NavLink
-            className={({ isActive }) =>
-              "px-4 py-4 font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-green-100" +
-              (isActive
-                ? " text-green-800 bg-green-100 border-b-2 border-green-800 font-semibold"
-                : " text-gray-700 hover:bg-green-100 hover:border-b-2 hover:border-green-800 hover:font-semibold hover:text-green-800")
-            }
-            to="/contact"
-          >
-            Liên hệ
-          </NavLink>
-        </div>
-        <div className="flex items-center gap-4">
-          <Facebook />
-          <Instagram />
-          <Youtube />
-        </div>
         </div>
       </nav>
     </header>

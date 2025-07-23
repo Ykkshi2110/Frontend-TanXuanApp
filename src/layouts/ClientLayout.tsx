@@ -1,34 +1,15 @@
-import CategoryShowcase from "../components/client/categories.showcase";
-import FeaturesSection from "../components/client/features.section";
+import { Outlet } from "react-router-dom";
 import Footer from "../components/client/footer";
 import Header from "../components/client/header";
-import HeroBanner from "../components/client/hero.banner";
-import NewsletterSection from "../components/client/newsletter.section";
-import ProductSection from "../components/client/product.section";
+import MainNav from "../components/client/main.nav";
 
 const ClientLayout = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
+      <MainNav />
       <main className="flex-grow ">
-        <HeroBanner />
-        <ProductSection
-          title="Sản phẩm nổi bật"
-          subtitle="Các sản phẩm được khách hàng yêu thích nhất"
-        />
-        <div className="my-10">
-          <CategoryShowcase />
-        </div>
-        <ProductSection
-          title="Sản phẩm mới nhất"
-          subtitle="Các sản phẩm mới về kho"
-        />
-        <FeaturesSection />
-        <ProductSection
-          title="Sản phẩm bán chạy"
-          subtitle="Các sản phẩm được khách hàng mua nhiều nhất"
-        />
-        <NewsletterSection />
+        <Outlet />
       </main>
       <Footer />
     </div>

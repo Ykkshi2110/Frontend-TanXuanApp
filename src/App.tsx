@@ -7,7 +7,8 @@ import "./App.css";
 import AdminLayout from "./layouts/AdminLayout";
 import AppLayout from "./layouts/AppLayout";
 import ClientLayout from "./layouts/ClientLayout";
-import HomePage from "./pages/admin/home";
+import DashboardPage from "./pages/admin/dashboard";
+import HomePage from "./pages/client/home";
 import OrderPage from "./pages/admin/orders";
 import ProductPage from "./pages/admin/products";
 import SupplierPage from "./pages/admin/supplier";
@@ -25,6 +26,8 @@ import PermissionPage from "./pages/admin/permissions";
 import RolePage from "./pages/admin/roles";
 import LoginInternalUserPage from "./pages/auth/login.internal.user";
 import CustomerPage from "./pages/admin/customer";
+import AboutPage from "./pages/client/about";
+import ContactPage from "./pages/client/contact";
 
 declare global {
   interface Window {
@@ -41,6 +44,28 @@ export const routes = [
       </AppLayout>
     ),
     errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        path: "login",
+        element: <LoginPage />,
+      },
+      {
+        path: "register",
+        element: <RegisterPage />,
+      },
+      {
+        path: "about",
+        element: <AboutPage />,
+      },
+      {
+        path: "contact",
+        element: <ContactPage />,
+      },
+    ],
   },
   {
     path: "/admin",
@@ -55,12 +80,12 @@ export const routes = [
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: <DashboardPage />,
         breadcrumb: "Quản trị",
       },
       {
         path: "dashboard",
-        element: <HomePage />,
+        element: <DashboardPage />,
         breadcrumb: "Trang chủ",
       },
       {
@@ -106,17 +131,9 @@ export const routes = [
     ],
   },
   {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/register",
-    element: <RegisterPage />,
-  },
-  {
-    path: "/admin/login",
+    path: "admin/login",
     element: <LoginInternalUserPage />,
-  },
+  }
 ];
 
 function App() {
