@@ -28,6 +28,7 @@ import LoginInternalUserPage from "./pages/auth/login.internal.user";
 import CustomerPage from "./pages/admin/customer";
 import AboutPage from "./pages/client/about";
 import ContactPage from "./pages/client/contact";
+import ProductShowPage from "./pages/client/product/show";
 
 declare global {
   interface Window {
@@ -64,6 +65,10 @@ export const routes = [
       {
         path: "contact",
         element: <ContactPage />,
+      },
+      {
+        path: "products",
+        element: <ProductShowPage />,
       },
     ],
   },

@@ -34,13 +34,22 @@ const ProductSection = ({ title, subtitle }: ProductSectionProps) => {
           </svg>
         </NavLink>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-4">
         <ProductCard
           image="/images/sample-product-section.jpg"
           name="Sample Product"
           price={100000}
           description="Sample description"
           isNew={true}
+          categoryName="Sample category"
+        />
+         <ProductCard
+          image="/images/sample-product-section.jpg"
+          name="Sample Product"
+          price={100000}
+          description="Sample description"
+          isNew={true}
+          categoryName="Sample category"
         />
         <ProductCard
           image="/images/sample-product-section.jpg"
@@ -48,6 +57,7 @@ const ProductSection = ({ title, subtitle }: ProductSectionProps) => {
           price={100000}
           description="Sample description"
           isBestSeller={true}
+          categoryName="Sample category"
         />
         <ProductCard
           image="/images/sample-product-section.jpg"
@@ -55,6 +65,7 @@ const ProductSection = ({ title, subtitle }: ProductSectionProps) => {
           price={100000}
           description="Sample description"
           isSale={true}
+          categoryName="Sample category"
         />
         <ProductCard
           image="/images/sample-product-section.jpg"
@@ -62,6 +73,7 @@ const ProductSection = ({ title, subtitle }: ProductSectionProps) => {
           price={100000}
           description="Sample description"
           isBestSeller={true}
+          categoryName="Sample category"
           />
         </div>
       </div>

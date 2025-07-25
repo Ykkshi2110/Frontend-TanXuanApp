@@ -2,16 +2,17 @@ import { NumericFormat } from "react-number-format";
 import { CartIcon } from "../../common/icons";
 
 interface ProductCardProps {
-  image: string;
+  image: string | null;
   name: string;
   price: number;
-  description: string;
+  categoryName?: string;
+  description?: string;
   isBestSeller?: boolean;
   isNew?: boolean;
   isSale?: boolean;
 }
 
-const ProductCard = ({ image, name, price, description, isBestSeller, isNew, isSale }: ProductCardProps) => {
+const ProductCard = ({ image, name, price, categoryName, description, isBestSeller, isNew, isSale }: ProductCardProps) => {
     const status = (() => {
         if (isNew) return "Mới";
         if (isBestSeller) return "Bán chạy";
@@ -25,12 +26,12 @@ const ProductCard = ({ image, name, price, description, isBestSeller, isNew, isS
         return null;
     })();
   return (
-    <div className="bg-white pb-4 rounded-md shadow-md">
+    <div className="bg-white pb-4 rounded-xl hover:shadow-md transition-shadow border border-gray-100">
       <div className="relative">
         <img
-          src={image}
+          src={image || ""}
           alt={name}
-          className="w-full h-48 object-cover rounded-md"
+          className="w-full h-44 object-cover rounded-t-xl"
         />
         {status && (
             <div className="absolute top-2 right-2 left-2">
@@ -40,9 +41,12 @@ const ProductCard = ({ image, name, price, description, isBestSeller, isNew, isS
             </div>
         )}
       </div>
-      <div className="flex flex-col gap-2 px-4">
-        <h3 className="text-lg font-medium text-gray-800 mt-4">{name}</h3>
-        <p className="text-gray-600 mt-2">{description}</p>
+      <div className="flex flex-col gap-2 px-4 py-2">
+        <div className="text-xs text-gray-500 mb-1">
+          {categoryName}
+        </div>
+        <h3 className="font-medium text-gray-800 line-clamp-1">{name}</h3>
+        <p className="text-gray-600 text-sm line-clamp-2">{description || "Không có mô tả"}</p>
         <div className="flex items-center justify-between mt-4">
           <span className="text-green-700 font-medium">
             <NumericFormat
@@ -55,9 +59,9 @@ const ProductCard = ({ image, name, price, description, isBestSeller, isNew, isS
           </span>
         </div>
         <div>
-          <button className="w-full bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-900 flex justify-center items-center gap-2">
+          <button className="w-full bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-900 flex justify-center items-center gap-2 whitespace-nowrap font-medium text-sm">
             <CartIcon size={16} color="white" className="size-4" />
-            Thêm vào giỏ hàng
+            Thêm vào giỏ
           </button>
         </div>
       </div>
