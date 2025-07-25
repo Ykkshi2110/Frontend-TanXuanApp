@@ -3,6 +3,19 @@ import { Facebook, Instagram, Youtube } from "../common/icons";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetchAllCategory } from "../../config/api";
 
+type FooterAboutItem = {
+  id: number;
+  label: string;
+  path: string;
+};
+const footerAboutItems: FooterAboutItem[] = [
+  { id: 1, label: "Giới thiệu", path: "/about" },
+  { id: 2, label: "Liên hệ", path: "/contact" },
+  { id: 3, label: "Chính sách bảo mật", path: "/privacy-policy" },
+  { id: 4, label: "Điều khoản và điều kiện", path: "/terms-and-conditions" },
+  { id: 5, label: "Câu hỏi thường gặp", path: "/faq" },
+];
+
 const Footer = () => {
   const {
     data: categories,
@@ -82,46 +95,16 @@ const Footer = () => {
               Về chúng tôi
             </h3>
             <ul className="space-y-2">
-              <li>
-                <NavLink
-                  to="/about"
-                  className="text-gray-600 hover:text-green-700 hover:underline"
-                >
-                  Giới thiệu
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/contact"
-                  className="text-gray-600 hover:text-green-700 hover:underline"
-                >
-                  Liên hệ
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/privacy-policy"
-                  className="text-gray-600 hover:text-green-700 hover:underline"
-                >
-                  Chính sách bảo mật
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/terms-and-conditions"
-                  className="text-gray-600 hover:text-green-700 hover:underline"
-                >
-                  Điều khoản và điều kiện
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/faq"
-                  className="text-gray-600 hover:text-green-700 hover:underline"
-                >
-                  Câu hỏi thường gặp
-                </NavLink>
-              </li>
+              {footerAboutItems.map((item) => (
+                <li key={item.id}>
+                  <NavLink
+                    to={item.path}
+                    className="text-gray-600 hover:text-green-700 hover:underline"
+                  >
+                    {item.label}
+                  </NavLink>
+                </li>
+              ))}
             </ul>
           </div>
           <div>

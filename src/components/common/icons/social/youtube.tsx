@@ -4,7 +4,7 @@ interface YoutubeProps {
   color?: string;
 }
 
-const Youtube = ({ className, size = 24, color = "#000" }: YoutubeProps) => {
+const Youtube = ({ className, size = 24, color = "currentColor" }: YoutubeProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

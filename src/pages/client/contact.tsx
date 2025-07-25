@@ -184,7 +184,7 @@ const ContactPage = () => {
               <MapContainer
                 style={{ width: "100%", height: "100%", zIndex: 0 }}
                 center={position}
-                zoom={15}
+                zoom={16}
                 scrollWheelZoom={false}
               >
                 <TileLayer

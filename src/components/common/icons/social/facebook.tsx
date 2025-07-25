@@ -4,7 +4,7 @@ interface FacebookProps {
   color?: string;
 }
 
-const Facebook = ({ className, size = 24, color = "#000" }: FacebookProps) => {
+const Facebook = ({ className, size = 24, color = "currentColor" }: FacebookProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

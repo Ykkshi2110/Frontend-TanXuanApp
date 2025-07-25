@@ -42,7 +42,7 @@ const ProductCard = ({ image, name, price, categoryName, description, isBestSell
         )}
       </div>
       <div className="flex flex-col gap-2 px-4 py-2">
-        <div className="text-xs text-gray-500 mb-1">
+        <div className="text-xs text-gray-500 mb-1 line-clamp-1">
           {categoryName}
         </div>
         <h3 className="font-medium text-gray-800 line-clamp-1">{name}</h3>
