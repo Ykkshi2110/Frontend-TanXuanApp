@@ -28,7 +28,8 @@ import LoginInternalUserPage from "./pages/auth/login.internal.user";
 import CustomerPage from "./pages/admin/customer";
 import AboutPage from "./pages/client/about";
 import ContactPage from "./pages/client/contact";
-import ProductShowPage from "./pages/client/product/show";
+import ProductShowPage from "./pages/client/product/product.show";
+import ProductDetailPage from "./pages/client/product/product.detail";
 
 declare global {
   interface Window {
@@ -49,6 +50,7 @@ export const routes = [
       {
         index: true,
         element: <HomePage />,
+        breadcrumb: "Trang chủ",
       },
       {
         path: "login",
@@ -61,14 +63,22 @@ export const routes = [
       {
         path: "about",
         element: <AboutPage />,
+        breadcrumb: "Giới thiệu",
       },
       {
         path: "contact",
         element: <ContactPage />,
+        breadcrumb: "Liên hệ",
       },
       {
         path: "products",
         element: <ProductShowPage />,
+        breadcrumb: "Sản phẩm",
+      },
+      {
+        path: "products/:id",
+        element: <ProductDetailPage />,
+        breadcrumb: "Chi tiết sản phẩm",
       },
     ],
   },

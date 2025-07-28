@@ -125,6 +125,7 @@ const ProductShowPage = () => {
             {products?.data.data?.result.map((product) => (
               <ProductCard
                 key={product.id}
+                id={product.id}
                 image={`${process.env.REACT_APP_URL_STORAGE_FILE}/productImgs/${product.productImage}`}
                 name={product.name}
                 price={product.price}
