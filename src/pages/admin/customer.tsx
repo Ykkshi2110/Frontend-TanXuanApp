@@ -12,12 +12,9 @@ import CustomToast from "../../components/common/toast.message";
 import {
   apiDeleteCustomer,
   apiFetchAllCustomer,
-  apiSearchCustomer
+  apiSearchCustomer,
 } from "../../config/api";
-import {
-  ICustomer,
-  ICustomerFilter
-} from "../../types/backend";
+import { ICustomer, ICustomerFilter } from "../../types/backend";
 import Access from "../auth/route/access";
 import CustomerModal from "../../components/admin/customers/customer.modal";
 
@@ -39,7 +36,6 @@ const CustomerPage = () => {
     createdAt: null,
   });
   const [debouncedFilters] = useDebounce(filters, 500);
-
 
   const {
     isPending,

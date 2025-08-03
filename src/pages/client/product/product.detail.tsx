@@ -14,19 +14,24 @@ const ProductDetailPage = () => {
   } = useQuery({
     queryKey: ["product", id],
     queryFn: () => apiFetchProductById(id || ""),
+    enabled: !!id,
   });
   if (isLoading) return <LoadingSpinner />;
-  if (isError || !product)
+  if (isError || !product?.data?.data)
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground">
-            Không tìm thấy sản phẩm
-          </h1>
-          <NavLink to="/products" className="text-primary hover:underline">
-            Quay lại trang sản phẩm
-          </NavLink>
-        </div>
+      <div className="text-center mt-12">
+        <h1 className="text-4xl font-bold text-gray-800 mb-6">
+          Không tìm thấy sản phẩm
+        </h1>
+        <p className="text-gray-600 mb-6">
+          Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.
+        </p>
+        <NavLink
+          to="/products"
+          className="inline-flex items-center px-4 py-2 bg-green-700 text-white rounded-md hover:bg-green-800 transition-colors"
+        >
+          ← Quay lại trang sản phẩm
+        </NavLink>
       </div>
     );
   return (
@@ -53,14 +58,14 @@ const ProductDetailPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="space-y-8">
           {/* Product image section */}
-          <Card className="border-none shadow-xl overflow-hidden">
+          <Card className="border-none shadow-xl">
             <div className="relative group">
-              <div className="relative overflow-hidden">
-              <img
-                src={`${process.env.REACT_APP_URL_STORAGE_FILE}/productImgs/${product.data.data?.productImage}`}
-                alt={product.data.data?.name}
-                className="w-full h-[450px] object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
-              />
+              <div className="relative overflow-hidden rounded-t-xl">
+                <img
+                  src={`${process.env.REACT_APP_URL_STORAGE_FILE}/productImgs/${product.data.data?.productImage}`}
+                  alt={product.data.data?.name}
+                  className="w-full h-[450px] object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+                />
               </div>
 
               <div className="absolute top-4 left-4 z-10">
@@ -87,9 +92,7 @@ const ProductDetailPage = () => {
                 </p>
                 <div className="flex items-center justify-center gap-2">
                   <div className="w-2 h-2 rounded-full animate-pulse bg-green-700"></div>
-                  <span className="text-xs text-green-700">
-                    Chất lượng HD
-                  </span>
+                  <span className="text-xs text-green-700">Chất lượng HD</span>
                   <div className="w-2 h-2 rounded-full animate-pulse bg-green-700"></div>
                 </div>
               </div>

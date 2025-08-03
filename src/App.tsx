@@ -53,14 +53,6 @@ export const routes = [
         breadcrumb: "Trang chủ",
       },
       {
-        path: "login",
-        element: <LoginPage />,
-      },
-      {
-        path: "register",
-        element: <RegisterPage />,
-      },
-      {
         path: "about",
         element: <AboutPage />,
         breadcrumb: "Giới thiệu",
@@ -81,6 +73,14 @@ export const routes = [
         breadcrumb: "Chi tiết sản phẩm",
       },
     ],
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/register",
+    element: <RegisterPage />,
   },
   {
     path: "/admin",
@@ -148,15 +148,12 @@ export const routes = [
   {
     path: "admin/login",
     element: <LoginInternalUserPage />,
-  }
+  },
 ];
 
 function App() {
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    window.HSStaticMethods.autoInit();
-  }, []);
 
   useEffect(() => {
     if (

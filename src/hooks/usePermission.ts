@@ -7,16 +7,16 @@ import { setPermissionAction } from "../redux/slice/permission.slice";
 export const usePermission = () => {
     const dispatch = useAppDispatch();
     const { data: permissions, isLoading } = useQuery({
-    queryKey: ["fetchAllPermissions"],
-    queryFn: () => apiFetchAllPermission(`page=1&size=100`),
+        queryKey: ["fetchAllPermissions"],
+        queryFn: () => apiFetchAllPermission(`page=1&size=100`),
     });
 
     useEffect(() => {
         if (permissions) {
-        dispatch(setPermissionAction({
-            permissions: permissions?.data?.data?.result,
-            isLoading: false,
-            error: "",
+            dispatch(setPermissionAction({
+                permissions: permissions?.data?.data?.result,
+                isLoading: false,
+                error: "",
             }));
         }
     }, [permissions, dispatch]);

@@ -5,7 +5,11 @@ import Pagination from "../../components/common/pagination";
 
 import { Plus } from "lucide-react";
 import CategoryTable from "../../components/admin/categories/category.table";
-import { apiDeleteCategory, apiFetchAllCategory, apiSearchCategory } from "../../config/api";
+import {
+  apiDeleteCategory,
+  apiFetchAllCategory,
+  apiSearchCategory,
+} from "../../config/api";
 import { ICategory, ICategoryFilter } from "../../types/backend";
 import CategoryModal from "../../components/admin/categories/category.modal";
 import { useDebounce } from "use-debounce";
@@ -113,9 +117,19 @@ const CategoryPage = () => {
     const res = await apiDeleteCategory(selectedCategory?.id ?? "");
     if (res?.data?.statusCode === 200) {
       reloadTable();
-      toast.success(<CustomToast message="Xóa danh mục thành công!" className="text-green-600" />);
+      toast.success(
+        <CustomToast
+          message="Xóa danh mục thành công!"
+          className="text-green-600"
+        />
+      );
     } else {
-      toast.error(<CustomToast message="Xóa danh mục thất bại!" className="text-red-600" />);
+      toast.error(
+        <CustomToast
+          message="Xóa danh mục thất bại!"
+          className="text-red-600"
+        />
+      );
     }
     setSelectedCategory(null);
     setIsOpenDeleteModal(false);

@@ -6,7 +6,7 @@ import ProductSection from "../../components/client/product.section";
 
 const HomePage = () => {
   return (
-    <div className="container mx-auto">
+    <>
       <HeroBanner />
       <ProductSection
         title="Sản phẩm nổi bật"
@@ -25,7 +25,7 @@ const HomePage = () => {
         subtitle="Các sản phẩm được khách hàng mua nhiều nhất"
       />
       <NewsletterSection />
-    </div>
+    </>
   );
 };
 
