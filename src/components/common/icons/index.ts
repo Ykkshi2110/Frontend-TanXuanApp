@@ -8,6 +8,6 @@ export { default as HandThumbUp } from './hand.thumb.up';
 export { default as Facebook } from './social/facebook';
 export { default as Instagram } from './social/instagram';
 export { default as Youtube } from './social/youtube';
-export { default as Start } from './start';
 export { default as Users } from './users';
 export { default as Heart } from './heart';
+export { default as Star } from './star';

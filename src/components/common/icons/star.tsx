@@ -1,18 +1,20 @@
-interface StartProps {
+interface StarProps {
   size?: number;
   className?: string;
   color?: string;
+  fill?: string;
 }
 
-const Start = ({
+const Star = ({
   size = 24,
   className = "",
   color = "currentColor",
-}: StartProps) => {
+  fill = "none",
+}: StarProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      fill="none"
+      fill={fill}
       viewBox="0 0 24 24"
       strokeWidth="2"
       stroke={color}
@@ -28,4 +30,5 @@ const Start = ({
     </svg>
   );
 };
-export default Start;
+
+export default Star;

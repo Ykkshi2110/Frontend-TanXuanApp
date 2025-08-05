@@ -1,4 +1,4 @@
-import { Shield, Start, Truck, Users } from "../../components/common/icons";
+import { Shield, Star, Truck, Users } from "../../components/common/icons";
 
 const AboutPage = () => {
   return (
@@ -53,7 +53,7 @@ const AboutPage = () => {
             </p>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <Start
+            <Star
               size={40}
               className="rounded-full bg-green-700 text-white p-2"
             />

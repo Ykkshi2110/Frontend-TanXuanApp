@@ -87,7 +87,11 @@ const SingleUploadImg = (props: SingleUploadImgProps) => {
           <img src={previewUrl} alt={fileName} className="mt-2 max-w-[200px]" />
         )}
         {defaultImg && !fileName && (
-          <img src={`${urlStorageImg}/productImgs/${defaultImg}`} alt={defaultImg} className="mt-2 max-w-[200px]" />
+          <img
+            src={`${urlStorageImg}/productImgs/${defaultImg}`}
+            alt={defaultImg}
+            className="mt-2 max-w-[200px]"
+          />
         )}
       </div>
     </div>
