@@ -4,22 +4,22 @@ import LoadingSpinner from "../../components/common/loading.spinner";
 import Pagination from "../../components/common/pagination";
 
 import { Plus } from "lucide-react";
-import CategoryTable from "../../components/admin/categories/category.table";
-import {
-  apiDeleteCategory,
-  apiFetchAllCategory,
-  apiSearchCategory,
-} from "../../config/api";
-import { ICategory, ICategoryFilter } from "../../types/backend";
-import CategoryModal from "../../components/admin/categories/category.modal";
+import { toast } from "react-toastify";
 import { useDebounce } from "use-debounce";
-import Access from "../auth/route/access";
+import CategoryModal from "../../components/admin/categories/category.modal";
+import CategoryTable from "../../components/admin/categories/category.table";
 import ModalDelete from "../../components/common/modal.delete";
 import CustomToast from "../../components/common/toast.message";
-import { toast } from "react-toastify";
+import {
+  apiDeleteCategory,
+  apiSearchCategory
+} from "../../config/api";
+import { useCategories } from "../../hooks";
+import { ICategory, ICategoryFilter } from "../../types/backend";
+import Access from "../auth/route/access";
 
 const CategoryPage = () => {
-  const MAX_CATEGORIES_PAGE = 5;
+  const CATEGORIES_PER_PAGE = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchCurrentPage, setSearchCurrentPage] = useState(1);
   const [totalSearchPage, setTotalSearchPage] = useState(0);
@@ -36,14 +36,9 @@ const CategoryPage = () => {
   });
   const [debouncedFilters] = useDebounce(filters, 500);
 
-  const {
-    isPending,
-    data: categories,
-    error,
-  } = useQuery({
-    queryKey: [["fetchAllCategories"], currentPage],
-    queryFn: () =>
-      apiFetchAllCategory(`page=${currentPage}&size=${MAX_CATEGORIES_PAGE}`),
+  const { categories, isPending, isError } = useCategories({
+    currentPage: currentPage,
+    size: CATEGORIES_PER_PAGE,
   });
 
   const [displayData, setDisplayData] = useState<ICategory[] | null>(
@@ -61,7 +56,7 @@ const CategoryPage = () => {
     queryKey: ["searchCategories", debouncedFilters, searchCurrentPage],
     queryFn: () =>
       apiSearchCategory(
-        `page=${searchCurrentPage}&size=${MAX_CATEGORIES_PAGE}`,
+        `page=${searchCurrentPage}&size=${CATEGORIES_PER_PAGE}`,
         {
           name: debouncedFilters.name,
           active: debouncedFilters.active,
@@ -135,10 +130,10 @@ const CategoryPage = () => {
     setIsOpenDeleteModal(false);
   };
 
-  if (error || searchError) {
+  if (isError || searchError) {
     return (
       <div>
-        <p>Something went wrong!</p>
+        <p>Lỗi khi tải danh mục</p>
       </div>
     );
   }

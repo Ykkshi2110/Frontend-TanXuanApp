@@ -116,6 +116,7 @@ const ProductTable = (props: IProps) => {
                         >
                           <div className="relative">
                             <select
+                              id="hs-select-category"
                               data-hs-select='{
                               "placeholder": "Lọc theo danh mục...",
                               "optionAllowEmptyOption": true,
@@ -193,6 +194,7 @@ const ProductTable = (props: IProps) => {
                         >
                           <div className="relative">
                             <select
+                              id="hs-select-supplier"
                               data-hs-select='{
                               "placeholder": "Lọc theo nhà cung cấp...",
                               "optionAllowEmptyOption": true,
@@ -207,13 +209,11 @@ const ProductTable = (props: IProps) => {
                               }}
                             >
                               <option value="">Tất cả nhà cung cấp</option>
-                              {suppliers?.data?.data?.result.map(
-                                (supplier) => (
-                                  <option value={supplier.id} key={supplier.id}>
-                                    {supplier.name}
-                                  </option>
-                                )
-                              )}
+                              {suppliers?.data?.data?.result.map((supplier) => (
+                                <option value={supplier.id} key={supplier.id}>
+                                  {supplier.name}
+                                </option>
+                              ))}
                             </select>
                             <div className="absolute top-1/2 end-2.5 -translate-y-1/2">
                               <svg

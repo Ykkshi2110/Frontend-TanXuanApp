@@ -28,8 +28,9 @@ import LoginInternalUserPage from "./pages/auth/login.internal.user";
 import CustomerPage from "./pages/admin/customer";
 import AboutPage from "./pages/client/about";
 import ContactPage from "./pages/client/contact";
-import ProductShowPage from "./pages/client/product/product.show";
-import ProductDetailPage from "./pages/client/product/product.detail";
+import ProductShowPage from "./pages/client/product/show";
+import ProductDetailPage from "./pages/client/product/detail/product.detail";
+import CartPage from "./pages/client/cart";
 
 declare global {
   interface Window {
@@ -71,6 +72,11 @@ export const routes = [
         path: "products/:id",
         element: <ProductDetailPage />,
         breadcrumb: "Chi tiết sản phẩm",
+      },
+      {
+        path: "cart",
+        element: <CartPage />,
+        breadcrumb: "Giỏ hàng",
       },
     ],
   },
@@ -153,7 +159,6 @@ export const routes = [
 
 function App() {
   const dispatch = useAppDispatch();
-
 
   useEffect(() => {
     if (

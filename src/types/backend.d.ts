@@ -132,6 +132,10 @@ export interface IProductFilter {
     supplier?: {
         id: string;
     };
+    priceRange?: {
+        min: number;
+        max: number;
+    }
 }
 
 

@@ -8,7 +8,7 @@ import {
   getPermissionsByModule,
   groupPermissionsByModule,
 } from "../../../config/permission";
-import { usePermission } from "../../../hooks";
+import { usePermissions } from "../../../hooks";
 import { IRole } from "../../../types/backend";
 import CustomToast from "../../common/toast.message";
 import RolePermissionAccordion from "./accordion.permission";
@@ -73,7 +73,7 @@ const RoleModal = (props: IProps) => {
     }
   };
 
-  const { permissions } = usePermission();
+  const { permissions } = usePermissions();
 
   const modules = groupPermissionsByModule(
     permissions?.data?.data?.result ?? []

@@ -6,7 +6,7 @@ interface IPaginationProps {
 
 const Pagination = (props: IPaginationProps) => {
   const { currentPage, setCurrentPage, total } = props;
-  const pageNumbers = Array.from({ length: total }, (_, index) => index + 1);
+
   return (
     <>
       {/* Pagination */}
@@ -34,19 +34,15 @@ const Pagination = (props: IPaginationProps) => {
           </svg>
         </button>
         <div className="flex items-center gap-x-1">
-          {pageNumbers.map((page) => (
-            <button
-              type="button"
-              className={`min-h-9.5 min-w-9.5 flex justify-center items-center text-black-800 py-2 px-3 text-xs rounded-lg focus:outline-hidden focus:bg-gray-300 disabled:opacity-50 disabled:pointer-events-none ${
-                currentPage === page ? "bg-gray-300" : "bg-white-300"
-              }`}
-              aria-current={currentPage === page ? "page" : undefined}
-              key={page}
-              onClick={() => setCurrentPage(page)}
-            >
-              {page}
-            </button>
-          ))}
+          <span className="min-h-9.5 min-w-9.5 flex justify-center items-center border border-gray-200 text-gray-800 py-2 px-3 text-sm rounded-lg focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none">
+            {currentPage}
+          </span>
+          <span className="min-h-9.5 flex justify-center items-center text-gray-500 py-2 px-1.5 text-sm">
+            of
+          </span>
+          <span className="min-h-9.5 flex justify-center items-center text-gray-500 py-2 px-1.5 text-sm">
+            {total}
+          </span>
         </div>
         <button
           type="button"
@@ -54,7 +50,7 @@ const Pagination = (props: IPaginationProps) => {
           aria-label="Next"
           disabled={currentPage === total}
           onClick={() => setCurrentPage(currentPage + 1)}
-        > 
+        >
           <svg
             className="shrink-0 size-3.5"
             xmlns="http://www.w3.org/2000/svg"

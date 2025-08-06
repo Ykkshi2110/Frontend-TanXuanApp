@@ -1,1 +1,2 @@
-export * from './usePermission';
+export * from './useCategories';
+export * from './usePermissions';

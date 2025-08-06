@@ -7,24 +7,24 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "../../../components/common/card";
+} from "../../../../components/common/card";
 import {
   ArrowPath,
   Heart,
   Shield,
   Star,
   Truck,
-} from "../../../components/common/icons";
-import Cart from "../../../components/common/icons/cart";
-import InputNumber from "../../../components/common/input.number";
-import LoadingSpinner from "../../../components/common/loading.spinner";
+} from "../../../../components/common/icons";
+import Cart from "../../../../components/common/icons/cart";
+import InputNumber from "../../../../components/common/input.number";
+import LoadingSpinner from "../../../../components/common/loading.spinner";
 import {
   Tabs,
   TabsContent,
   TabsItem,
   TabsList,
-} from "../../../components/common/tabs";
-import { apiFetchProductById } from "../../../config/api";
+} from "../../../../components/common/tabs";
+import { apiFetchProductById } from "../../../../config/api";
 
 const ProductDetailPage = () => {
   const { id } = useParams();

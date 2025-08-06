@@ -1,7 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { Facebook, Instagram, Youtube } from "../common/icons";
-import { useQuery } from "@tanstack/react-query";
-import { apiFetchAllCategory } from "../../config/api";
+import { useCategories } from "../../hooks";
 
 type FooterAboutItem = {
   id: number;
@@ -17,13 +16,9 @@ const footerAboutItems: FooterAboutItem[] = [
 ];
 
 const Footer = () => {
-  const {
-    data: categories,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["fetchAllCategories"],
-    queryFn: () => apiFetchAllCategory(`page=1&size=100`),
+  const { categories, isPending, isError } = useCategories({
+    currentPage: 1,
+    size: 100,
   });
 
   return (
@@ -82,12 +77,12 @@ const Footer = () => {
               )}
             </ul>
           </div>
-          {isLoading && (
-            <div className="text-center text-gray-600">Loading...</div>
+          {isPending && (
+            <div className="text-center text-gray-600">Đang tải...</div>
           )}
-          {error && (
+          {isError && (
             <div className="text-center text-red-600">
-              Error: {error.message}
+              Lỗi khi tải danh mục
             </div>
           )}
           <div>

@@ -4,7 +4,7 @@ import { apiFetchAllPermission } from "../config/api";
 import { useAppDispatch } from "../redux/hooks";
 import { setPermissionAction } from "../redux/slice/permission.slice";
 
-export const usePermission = () => {
+export const usePermissions = () => {
     const dispatch = useAppDispatch();
     const { data: permissions, isLoading } = useQuery({
         queryKey: ["fetchAllPermissions"],
