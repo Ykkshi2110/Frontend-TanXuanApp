@@ -106,12 +106,13 @@ const Header = () => {
             </NavLink>
 
             {!isAuthenticated ? (
-              <button
-                type="button"
+              <NavLink
+                to="/login"
                 className="hidden py-3 px-4 md:inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-800 text-white hover:bg-green-900 focus:outline-hidden focus:bg-green-900 disabled:opacity-50 disabled:pointer-events-none"
               >
                 Đăng nhập
-              </button>
+              </NavLink>
+              
             ) : (
               <div className="hidden hs-dropdown relative md:inline-flex">
                 <button

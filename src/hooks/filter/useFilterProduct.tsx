@@ -5,16 +5,14 @@ import { useQuery } from "@tanstack/react-query";
 import { apiSearchProduct } from "../../config/api";
 
 interface UseFilterProductProps {
-  categoryId?: string;
-  name?: string;
-  priceRange?: {
-    min: number;
-    max: number;
-  };
   searchCurrentPage?: number;
   searchPageSize?: number;
   isSearching?: boolean;
   setIsSearching?: (isSearching: boolean) => void;
+  priceRange?: {
+    min: number;
+    max: number;
+  };
 }
 
 export const useFilterProduct = (
@@ -24,14 +22,12 @@ export const useFilterProduct = (
     searchPageSize = 10,
     isSearching = false,
     setIsSearching = () => {},
+    priceRange = { min: 0, max: 0 },
   }: UseFilterProductProps = {}
 ) => {
   const defaultFilters: IProductFilter = {
     name: "",
-    priceRange: {
-      min: 0,
-      max: 0,
-    },
+    priceRange: priceRange,
     quantity: 0,
     unit: "",
     category: {
@@ -46,6 +42,7 @@ export const useFilterProduct = (
     ...defaultFilters,
     ...initialFilters,
   });
+
 
   const [debouncedFilters] = useDebounce(filters, 500);
 
@@ -67,7 +64,7 @@ export const useFilterProduct = (
           ? {
               priceRange: {
                 min: debouncedFilters.priceRange.min,
-                max: debouncedFilters.priceRange.max,
+                max: priceRange.max,
               },
             }
           : {}),
@@ -78,9 +75,17 @@ export const useFilterProduct = (
   });
 
   const updateFilter = (key: keyof IProductFilter, value: string | number) => {
-    setFilters((prev) => ({ ...prev, 
-        ...(key === "category" ? { category: { id: value as string } } : {}),
-     }));
+    let newValue: Partial<IProductFilter> = {};
+    if (key === "category") {
+      newValue = { category: { id: value as string } };
+    } else if (key === "supplier") {
+      newValue = { supplier: { id: value as string } };
+    } else if (key === "priceRange") {
+      newValue = { priceRange: { min: value as number, max: filters.priceRange?.max || 0 } };
+    } else {
+      newValue = { [key]: value };
+    }
+    setFilters((prev) => ({ ...prev, ...newValue }));
     setIsSearching(!!value);
   };
 

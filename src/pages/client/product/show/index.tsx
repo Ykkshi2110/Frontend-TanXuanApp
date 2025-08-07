@@ -3,7 +3,7 @@ import { useCategories } from "../../../../hooks/useCategories";
 import { useProducts } from "../../../../hooks/useProducts";
 import SidebarFilter from "./sidebar.filter";
 import ProductStats from "./product.stats";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import LoadingSpinner from "../../../../components/common/loading.spinner";
 import { useFilterProduct } from "../../../../hooks/filter/useFilterProduct";
 import { IProduct } from "../../../../types/backend";
@@ -14,7 +14,11 @@ const ProductShowPage = () => {
   const [totalSearchPage, setTotalSearchPage] = useState(1);
   const [isSearching, setIsSearching] = useState(false);
   const PRODUCTS_PER_PAGE = 8;
-  const { categories, isPending: isPendingCategories, isError: isErrorCategories } = useCategories({
+  const {
+    categories,
+    isPending: isPendingCategories,
+    isError: isErrorCategories,
+  } = useCategories({
     currentPage: 1,
     size: 100,
   });
@@ -28,7 +32,16 @@ const ProductShowPage = () => {
     size: PRODUCTS_PER_PAGE,
   });
 
-  const [displayData, setDisplayData] = useState<IProduct[]>(products?.data.data?.result || []);
+  const priceRange = useMemo(() => {
+    return {
+      min: products?.data.data?.result.reduce((min, product) => Math.min(min, product.price), Infinity) || 0,
+      max: products?.data.data?.result.reduce((max, product) => Math.max(max, product.price), 0) || 0,
+    };
+  }, [products]);
+
+  const [displayData, setDisplayData] = useState<IProduct[]>(
+    products?.data.data?.result || []
+  );
 
   // display data
   useEffect(() => {
@@ -37,12 +50,14 @@ const ProductShowPage = () => {
     }
   }, [products]);
 
-  const { filters, resetFilters, updateFilter, searchData, searchError } = useFilterProduct(undefined, {
-    searchCurrentPage: searchCurrentPage,
-    searchPageSize: PRODUCTS_PER_PAGE,
-    isSearching: isSearching,
-    setIsSearching: setIsSearching,
-  });
+  const { filters, resetFilters, updateFilter, searchData, searchError } =
+    useFilterProduct(undefined, {
+      searchCurrentPage: searchCurrentPage,
+      searchPageSize: PRODUCTS_PER_PAGE,
+      isSearching: isSearching,
+      setIsSearching: setIsSearching,
+      priceRange: priceRange,
+    });
 
   useEffect(() => {
     if (searchData) {
@@ -67,15 +82,32 @@ const ProductShowPage = () => {
       </div>
       <div className="flex lg:flex-row flex-col gap-6">
         {/* Left content*/}
-       <SidebarFilter categories={categories?.data.data?.result || []} isPending={isPendingCategories} isError={isErrorCategories} filters={filters} resetFilters={resetFilters} updateFilter={updateFilter}/>
+        <SidebarFilter
+          categories={categories?.data.data?.result || []}
+          isPending={isPendingCategories}
+          isError={isErrorCategories}
+          filters={filters}
+          resetFilters={resetFilters}
+          updateFilter={updateFilter}
+          isSearching={isSearching}
+          priceRange={priceRange}
+        />
 
         {/* Right content*/}
         <div className="flex-1">
           <ProductStats
             className="mb-6"
             currentPage={isSearching ? searchCurrentPage : currentPage}
-            totalPages={isSearching ? totalSearchPage : products?.data.data?.meta.pages || 0}
-            totalProducts={isSearching ? searchData?.data.data?.meta.total || 0 : products?.data.data?.meta.total || 0}
+            totalPages={
+              isSearching
+                ? totalSearchPage
+                : products?.data.data?.meta.pages || 0
+            }
+            totalProducts={
+              isSearching
+                ? searchData?.data.data?.meta.total || 0
+                : products?.data.data?.meta.total || 0
+            }
             showingProducts={displayData.length}
             setCurrentPage={isSearching ? setSearchCurrentPage : setCurrentPage}
           />
@@ -92,8 +124,12 @@ const ProductShowPage = () => {
               />
             ))}
           </div>
-          {isPendingProducts && <LoadingSpinner className="mt-10"/>}
-          {isErrorProducts && <div className="text-red-500 text-center text-2xl font-bold">Lỗi khi tải sản phẩm</div>}
+          {isPendingProducts && <LoadingSpinner className="mt-10" />}
+          {isErrorProducts && (
+            <div className="text-red-500 text-center text-2xl font-bold">
+              Lỗi khi tải sản phẩm
+            </div>
+          )}
         </div>
       </div>
     </div>
